@@ -1,0 +1,100 @@
+#include "lexer.h"
+#include <cctype>
+
+#include <iostream>
+
+
+Lexer::Lexer(const std::string& text) : text(text), pos(0), lastWasNewline(false), pendingDedents(0) {
+	currentChar = text.empty() ? '\0' : text[pos];
+}
+
+void Lexer::advance() {
+	pos++;
+	currentChar = (pos < text.size()) ? text[pos] : '\0';
+}
+
+void Lexer::skipWhitespace() {
+	while (currentChar != '\0' && isspace(currentChar))
+		advance();
+}
+
+std::string Lexer::integer() {
+	std::string result;
+	while (currentChar != '\0' && isdigit(currentChar)) {
+		result += currentChar;
+		advance();
+	}
+	return result;
+}
+
+Token Lexer::getNextToken() {
+
+	while (currentChar != '\0') {
+
+		// Handles indentation
+
+		// Handle queued dedents
+		if (pendingDedents > 0) {
+			pendingDedents--;
+			return { TokenType::DEDENT, "" };
+		}
+
+		if (lastWasNewline) { 
+			lastWasNewline = false;
+			// Count spaces at start of new line
+			int spaceCount = 0;
+			while (currentChar == ' ') {
+				spaceCount++;
+				advance();
+			}
+			// Dont handle indentation for empty lines
+			if (currentChar == '\n')
+				continue;
+			
+			if (spaceCount % 4 != 0) {
+				std::cerr << "IndentationError: unexpected indent" << std::endl;
+				throw 1;
+			}
+			 
+			if (spaceCount / 4 > indentStack.back()) {
+				indentStack.push_back(spaceCount / 4);
+				return { TokenType::INDENT, "" };
+			} 
+			else if (spaceCount / 4 < indentStack.back()) {
+				while (!indentStack.empty() && spaceCount / 4 < indentStack.back()) {
+					indentStack.pop_back();
+					pendingDedents++;
+				}
+				if (pendingDedents > 0) {
+					pendingDedents--;
+					return { TokenType::DEDENT, "" };
+				}
+			}
+		}
+
+		if (currentChar == '\n') { advance(); lastWasNewline = true; return { TokenType::NEWLINE, "" }; }
+
+		if (isspace(currentChar)) {
+			skipWhitespace();
+			continue;
+		}
+
+		if (isdigit(currentChar)) return { TokenType::INTEGER, integer() };
+
+		if (currentChar == '+') { advance(); return { TokenType::PLUS, "+" }; }
+		if (currentChar == '-') { advance(); return { TokenType::MINUS, "-" }; }
+		if (currentChar == '*') { advance(); return { TokenType::MUL, "*" }; }
+		if (currentChar == '/') { advance(); return { TokenType::DIV, "/" }; }
+		if (currentChar == '(') { advance(); return { TokenType::LPAR, "(" }; }
+		if (currentChar == ')') { advance(); return { TokenType::RPAR, ")" }; }
+
+		// Add more token types as needed
+		std::cerr << "Token Not Recognised" << std::endl;
+		throw 1;
+	}
+	if (indentStack.size() > 1) {
+		indentStack.pop_back();
+		return { TokenType::DEDENT, "" };
+	}
+	return { TokenType::EOF_TOKEN, "" };
+}
