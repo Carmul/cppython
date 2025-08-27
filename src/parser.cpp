@@ -1,0 +1,80 @@
+#include "parser.h"
+#include <memory.h>
+#include <iostream>
+
+Parser::Parser(Lexer& lexer) : lexer(lexer) {
+	currentToken = lexer.getNextToken();
+    // Skip initial newlines
+    while (currentToken.type == TokenType::NEWLINE) {
+        currentToken = lexer.getNextToken();
+    }
+}
+
+void Parser::eat(TokenType type) {
+	if (currentToken.type == type) {
+		currentToken = lexer.getNextToken();
+	}
+	else {
+		std::cerr << "Error: expected token type " << static_cast<int>(type) << ", got " << static_cast<int>(currentToken.type) << std::endl;
+		throw 1;
+	}
+}
+
+// for now, just return expr
+ASTNodePtr Parser::parse() {
+	
+	return expr();
+}
+
+// term ( (PLUS | MINUS) term)*
+ASTNodePtr Parser::expr() {
+
+	auto node = term();
+	while (currentToken.type == TokenType::PLUS || currentToken.type == TokenType::MINUS) {
+		std::string op = currentToken.value;
+		if (currentToken.type == TokenType::PLUS) {
+			eat(TokenType::PLUS);
+		}
+		else if (currentToken.type == TokenType::MINUS) {
+			eat(TokenType::MINUS);
+		}
+		node = std::make_unique<BinaryOpNode>(std::move(node), op, term());
+	}
+	return node;
+
+}
+
+// factor ( (MUL | DIV) factor)*
+ASTNodePtr Parser::term() {
+
+	auto node = factor();
+	while (currentToken.type == TokenType::MUL || currentToken.type == TokenType::DIV) {
+		std::string op = currentToken.value;
+		if (currentToken.type == TokenType::MUL) {
+			eat(TokenType::MUL);
+		}
+		else if (currentToken.type == TokenType::DIV) {
+			eat(TokenType::DIV);
+		}
+		node = std::make_unique<BinaryOpNode>(std::move(node), op, factor());
+	}
+	return node;
+
+}
+
+// factor : NUMBER | LPAR expr RPAR
+ASTNodePtr Parser::factor() {
+	if (currentToken.type == TokenType::NUMBER) {
+		auto node = std::make_unique<NumberNode>(currentToken.value);
+		eat(TokenType::NUMBER);
+		return node;
+	}
+	if (currentToken.type == TokenType::LPAR) {
+		eat(TokenType::LPAR);
+		auto node = expr();
+		eat(TokenType::RPAR);
+		return node;
+	}
+	std::cerr << "Error: Invalide factor, got " << static_cast<int>(currentToken.type) << std::endl;
+	throw 1;
+}

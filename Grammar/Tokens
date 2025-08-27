@@ -1,0 +1,15 @@
+
+NUMBER
+STRING		# not implemented yet
+NAME		# not implemented yet
+NEWLINE
+INDENT
+DEDENT
+EOF_TOKEN
+
+PLUS		"+"
+MINUS		"-"
+MUL			"*"
+DIV			"/"
+LPAR		"("
+RPAR		")"

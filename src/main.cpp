@@ -3,11 +3,12 @@
 #include <fstream>
 
 #include "lexer.h"
+#include "parser.h"
 
 std::string readPythonFile(const std::string path);
 
 int main() {
-
+    /*
     auto script = readPythonFile("C:\\Users\\stalm\\source\\repos\\CCPython\\test");
     std::cout << "====================" << std::endl;
     std::cout << script << std::endl;
@@ -22,14 +23,18 @@ int main() {
             break;
     }
     std::cout << std::endl;
+    */
 
     // interactive interpreter
     std::string line;
     while (true) {
         std::cout << ">>> ";
         std::getline(std::cin, line);
+		if (line.empty())
+			continue;
+        
+		// print tokens
         Lexer lexer = Lexer(line);
-
         while (true) {
             Token t = lexer.getNextToken();
             std::cout << t.toString() << std::endl;
@@ -37,6 +42,14 @@ int main() {
                 break;
         }
         std::cout << std::endl;
+        
+
+		lexer = Lexer(line); // reset lexer
+		Parser parser(lexer);
+       
+        ASTNodePtr root = parser.parse();
+        std::cout << "AST: " << root->toString() << std::endl;
+        
     }   
 
     return 0;

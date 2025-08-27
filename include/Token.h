@@ -1,7 +1,7 @@
 #pragma once
 
 enum class TokenType {
-    INTEGER,
+    NUMBER,
     PLUS,
     MINUS,
     MUL,

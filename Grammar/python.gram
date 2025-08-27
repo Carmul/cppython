@@ -1,0 +1,10 @@
+# Python grammar
+
+
+expr : term ( (PLUS | MINUS) term)*
+	
+term : factor ( (MUL | DIV) factor)*
+	
+factor : NUMBER	| LPAR expr RPAR
+	
+	

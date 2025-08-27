@@ -18,5 +18,5 @@ private:
     bool lastWasNewline;
     void advance();
     void skipWhitespace();
-    std::string integer();
+    std::string number();
 };

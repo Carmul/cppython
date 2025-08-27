@@ -3,7 +3,7 @@
 
 #include <iostream>
 
-
+// TODO: add current line and col for better errors
 Lexer::Lexer(const std::string& text) : text(text), pos(0), lastWasNewline(false), pendingDedents(0) {
 	currentChar = text.empty() ? '\0' : text[pos];
 }
@@ -18,12 +18,24 @@ void Lexer::skipWhitespace() {
 		advance();
 }
 
-std::string Lexer::integer() {
+std::string Lexer::number() {
+	// TODO: handle 123abc cases and maybe hex, binary, etc.
 	std::string result;
 	while (currentChar != '\0' && isdigit(currentChar)) {
 		result += currentChar;
 		advance();
+		if (currentChar == '.') {
+			result += currentChar;
+			advance();
+			break;
+		}
 	}
+	while (currentChar != '\0' && isdigit(currentChar)) {
+		result += currentChar;
+		advance();
+	}
+	if (result.back() == '.') // 123. => 123.0
+		result += '0';
 	return result;
 }
 
@@ -31,14 +43,12 @@ Token Lexer::getNextToken() {
 
 	while (currentChar != '\0') {
 
-		// Handles indentation
-
 		// Handle queued dedents
 		if (pendingDedents > 0) {
 			pendingDedents--;
 			return { TokenType::DEDENT, "" };
 		}
-
+		// Handles indentation
 		if (lastWasNewline) { 
 			lastWasNewline = false;
 			// Count spaces at start of new line
@@ -79,7 +89,7 @@ Token Lexer::getNextToken() {
 			continue;
 		}
 
-		if (isdigit(currentChar)) return { TokenType::INTEGER, integer() };
+		if (isdigit(currentChar)) return { TokenType::NUMBER, number() };
 
 		if (currentChar == '+') { advance(); return { TokenType::PLUS, "+" }; }
 		if (currentChar == '-') { advance(); return { TokenType::MINUS, "-" }; }
