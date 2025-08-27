@@ -46,8 +46,7 @@ ASTNodePtr Parser::expr() {
 
 // factor ( (MUL | DIV) factor)*
 ASTNodePtr Parser::term() {
-
-	auto node = factor();
+	ASTNodePtr node = factor();
 	while (currentToken.type == TokenType::MUL || currentToken.type == TokenType::DIV) {
 		std::string op = currentToken.value;
 		if (currentToken.type == TokenType::MUL) {
@@ -62,8 +61,19 @@ ASTNodePtr Parser::term() {
 
 }
 
-// factor : NUMBER | LPAR expr RPAR
+// factor : (PLUS | NIMUS) factor | NUMBER | LPAR expr RPAR
 ASTNodePtr Parser::factor() {
+	if (currentToken.type == TokenType::PLUS) {
+		std::string op = currentToken.value;
+		eat(TokenType::PLUS);
+		return std::make_unique<UnaryOpNode>(op, factor());
+	}
+	if (currentToken.type == TokenType::MINUS) {
+		std::string op = currentToken.value;
+		eat(TokenType::MINUS);
+		return std::make_unique<UnaryOpNode>(op, factor());
+	}
+
 	if (currentToken.type == TokenType::NUMBER) {
 		auto node = std::make_unique<NumberNode>(currentToken.value);
 		eat(TokenType::NUMBER);

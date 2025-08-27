@@ -5,6 +5,6 @@ expr : term ( (PLUS | MINUS) term)*
 	
 term : factor ( (MUL | DIV) factor)*
 	
-factor : NUMBER	| LPAR expr RPAR
+factor : (PLUS | MINUS) factor | NUMBER | LPAR expr RPAR
 	
 	

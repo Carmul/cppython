@@ -6,6 +6,7 @@
 class Visitor;
 class NumberNode;
 class BinaryOpNode;
+class UnaryOpNode;
 
 class ASTNode {
 public:
@@ -21,6 +22,7 @@ class Visitor {
 public:
     virtual void visit(const NumberNode& node) = 0;
     virtual void visit(const BinaryOpNode& node) = 0;
+	virtual void visit(const UnaryOpNode& node) = 0;
 };
 
 using ASTNodePtr = std::unique_ptr<ASTNode>;
@@ -54,3 +56,19 @@ public:
         v.visit(*this);
     }
 };
+
+// Unary operation node (for now only +, -)
+class UnaryOpNode : public ASTNode {
+public:
+	std::string op;
+	ASTNodePtr factor;
+
+    UnaryOpNode(const std::string& operation, ASTNodePtr e);
+    std::string toString() const override;
+    std::string getNodeType() const override;
+
+    void accept(Visitor& v) const override {
+        v.visit(*this);
+    }
+};
+

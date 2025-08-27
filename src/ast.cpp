@@ -19,4 +19,12 @@ std::string BinaryOpNode::toString() const {
 
 std::string BinaryOpNode::getNodeType() const { return "BinaryOp"; }
 
-// more class to come...
+// UnaryOpNode class
+UnaryOpNode::UnaryOpNode(const std::string& operation, ASTNodePtr factorNode)
+	: op(operation), factor(std::move(factorNode)) {}
+
+std::string UnaryOpNode::toString() const {
+	return "{" + op + factor->toString() + "}";
+}
+
+std::string UnaryOpNode::getNodeType() const { return "UnaryOp"; }

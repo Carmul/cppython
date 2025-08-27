@@ -21,3 +21,11 @@ void Interpreter::visit(const BinaryOpNode& node) {
     else if (node.op == "/") 
         result = lval / rval;
 }
+
+void Interpreter::visit(const UnaryOpNode& node) {
+	node.factor->accept(*this);
+    if (node.op == "+")
+        ;// unary plus, do nothing
+	else if (node.op == "-")
+		result = -result;
+}
