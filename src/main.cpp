@@ -4,6 +4,7 @@
 
 #include "lexer.h"
 #include "parser.h"
+#include "interpreter.h"
 
 std::string readPythonFile(const std::string path);
 
@@ -43,13 +44,17 @@ int main() {
         }
         std::cout << std::endl;
         
-
+		// parse and print AST
 		lexer = Lexer(line); // reset lexer
 		Parser parser(lexer);
        
-        ASTNodePtr root = parser.parse();
-        std::cout << "AST: " << root->toString() << std::endl;
-        
+        ASTNodePtr tree = parser.parse();
+        std::cout << "AST: " << tree->toString() << std::endl;
+
+		// interpret and print result
+		Interpreter interpreter;
+		tree->accept(interpreter);
+		std::cout << "Result: " << interpreter.result << std::endl;
     }   
 
     return 0;

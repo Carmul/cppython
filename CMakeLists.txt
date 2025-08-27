@@ -10,14 +10,18 @@ set(SOURCES
     src/Token.cpp
     src/lexer.cpp
     src/parser.cpp
-    src/ast.cpp)
+    src/ast.cpp
+    src/interpreter.cpp
+)
 
 # Header files
 set(HEADERS
     include/Token.h
     include/lexer.h
     include/parser.h
-    include/ast.h)
+    include/ast.h 
+    include/interpreter.h
+)
 
 add_executable(CPPython ${SOURCES} ${HEADERS})
 target_include_directories(CPPython PRIVATE include)
