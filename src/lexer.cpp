@@ -57,9 +57,12 @@ Token Lexer::getNextToken() {
 				spaceCount++;
 				advance();
 			}
-			// Dont handle indentation for empty lines
-			if (currentChar == '\n')
+			// ignore multiple consecutive newlines
+			if (currentChar == '\n') {
+				advance(); 
+				lastWasNewline = true;
 				continue;
+			}
 			
 			if (spaceCount % 4 != 0) {
 				std::cerr << "IndentationError: unexpected indent" << std::endl;

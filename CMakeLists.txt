@@ -12,6 +12,7 @@ set(SOURCES
     src/parser.cpp
     src/ast.cpp
     src/interpreter.cpp
+    src/dotGenerator.cpp
 )
 
 # Header files
@@ -21,6 +22,7 @@ set(HEADERS
     include/parser.h
     include/ast.h 
     include/interpreter.h
+    include/dotGenerator.h
 )
 
 add_executable(CPPython ${SOURCES} ${HEADERS})

@@ -5,11 +5,12 @@
 #include "lexer.h"
 #include "parser.h"
 #include "interpreter.h"
+#include "dotGenerator.h"
 
 std::string readPythonFile(const std::string path);
 
 int main() {
-    /*
+    
     auto script = readPythonFile("C:\\Users\\stalm\\source\\repos\\CCPython\\test");
     std::cout << "====================" << std::endl;
     std::cout << script << std::endl;
@@ -24,7 +25,7 @@ int main() {
             break;
     }
     std::cout << std::endl;
-    */
+    
 
     // interactive interpreter
     std::string line;
@@ -55,6 +56,10 @@ int main() {
 		Interpreter interpreter;
 		tree->accept(interpreter);
 		std::cout << "Result: " << interpreter.result << std::endl;
+
+		// generate and print DOT format
+		std::string dot = DotGenerator().generate(std::move(tree));
+		std::cout << "DOT format:\n" << dot << std::endl;
     }   
 
     return 0;
