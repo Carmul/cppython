@@ -2,11 +2,14 @@
 
 #include <iostream>
 #include <memory>
+#include <vector>
 
 class Visitor;
 class NumberNode;
 class BinaryOpNode;
 class UnaryOpNode;
+class ProgramNode;
+class PrintNode;
 
 class ASTNode {
 public:
@@ -23,6 +26,8 @@ public:
     virtual void visit(const NumberNode& node) = 0;
     virtual void visit(const BinaryOpNode& node) = 0;
 	virtual void visit(const UnaryOpNode& node) = 0;
+	virtual void visit(const ProgramNode& node) = 0;
+	virtual void visit(const PrintNode& node) = 0;
 };
 
 using ASTNodePtr = std::unique_ptr<ASTNode>;
@@ -72,3 +77,28 @@ public:
     }
 };
 
+// Program node (root of the AST)
+class ProgramNode : public ASTNode {
+public:
+    std::vector<ASTNodePtr> statements;
+
+    ProgramNode(std::vector<ASTNodePtr> stmts);
+    std::string toString() const override;
+    std::string getNodeType() const override;
+
+    void accept(Visitor& v) const override {
+        v.visit(*this);
+    }
+};
+
+class PrintNode : public ASTNode {
+public:
+	ASTNodePtr expr;
+
+    PrintNode(ASTNodePtr e);
+    std::string toString() const override;
+    std::string getNodeType() const override;
+	void accept(Visitor& v) const override {
+		v.visit(*this);
+	}
+};

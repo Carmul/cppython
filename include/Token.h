@@ -11,6 +11,8 @@ enum class TokenType {
     RPAR,
     INDENT,
     DEDENT,
+    PRINT,
+    NAME,
     EOF_TOKEN
 };
 

@@ -13,6 +13,8 @@ std::string tokenTypeToString(TokenType type) {
 		case TokenType::DEDENT:     return "DEDENT";
 		case TokenType::LPAR:  return "LPAR";
 		case TokenType::RPAR:  return "RPAR";
+		case TokenType::PRINT: return "PRINT";
+		case TokenType::NAME:  return "NAME";
 		case TokenType::EOF_TOKEN: return "EOF";
 		default:                 return "UNKNOWN";
 	}

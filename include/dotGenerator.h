@@ -9,6 +9,8 @@ public:
     void visit(const NumberNode& node) override;
     void visit(const BinaryOpNode& node) override;
     void visit(const UnaryOpNode& node) override;
+    void visit(const ProgramNode& node) override;
+	void visit(const PrintNode& node) override;
 
 private:
     std::string dot;

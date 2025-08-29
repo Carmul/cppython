@@ -38,3 +38,23 @@ void DotGenerator::visit(const BinaryOpNode& node) {
 
     stack.push_back({ id });
 }
+
+void DotGenerator::visit(const ProgramNode& node) {
+	std::string id = newId();
+	dot += "    " + id + " [label=\"" + node.getNodeType() + "\"];\n";
+	for (const auto& stmt : node.statements) {
+		stmt->accept(*this);
+		std::string stmtId = stack.back().id; stack.pop_back();
+		dot += "    " + id + " -> " + stmtId + ";\n";
+	}
+	stack.push_back({ id });
+}
+
+void DotGenerator::visit(const PrintNode& node) {
+	std::string id = newId();
+	dot += "    " + id + " [label=\"" + node.getNodeType() + "\"];\n";
+	node.expr->accept(*this);
+	std::string exprId = stack.back().id; stack.pop_back();
+	dot += "    " + id + " -> " + exprId + ";\n";
+	stack.push_back({ id });
+}

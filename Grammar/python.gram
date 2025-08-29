@@ -1,5 +1,13 @@
 # Python grammar
 
+# not implemented yet
+program : statement (NEWLINE statement)* EOF_TOKEN 
+
+statement : print_stmt | NEWLINE
+
+print_stmt : PRINT LPAR expression RPAR
+
+
 
 expr : term ( (PLUS | MINUS) term)*
 	

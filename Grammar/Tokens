@@ -1,7 +1,7 @@
 
 NUMBER
 STRING		# not implemented yet
-NAME		# not implemented yet
+NAME		
 NEWLINE
 INDENT
 DEDENT
@@ -13,3 +13,5 @@ MUL			"*"
 DIV			"/"
 LPAR		"("
 RPAR		")"
+
+PRINT		"print"

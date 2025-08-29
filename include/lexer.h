@@ -19,4 +19,5 @@ private:
     void advance();
     void skipWhitespace();
     std::string number();
+	std::string identifier();
 };

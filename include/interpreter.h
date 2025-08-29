@@ -1,13 +1,22 @@
 #include "ast.h"
 #include <string>
+#include <memory>
 
 class Interpreter : public Visitor {
 public:
-    double result;
+	ASTNodePtr tree;
 
-    void visit(const NumberNode& node) override;
-    void visit(const BinaryOpNode& node) override;
+	Interpreter(ASTNodePtr t) : result(0), tree(std::move(t)) {}
+
+	double interpret();
+
+	void visit(const NumberNode& node) override;
+	void visit(const BinaryOpNode& node) override;
 	void visit(const UnaryOpNode& node) override;
+	void visit(const ProgramNode& node) override;
+	void visit(const PrintNode& node) override;
 		
-	
+private:
+	double result;
+
 };

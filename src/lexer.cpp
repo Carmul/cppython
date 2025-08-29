@@ -39,6 +39,15 @@ std::string Lexer::number() {
 	return result;
 }
 
+std::string Lexer::identifier() {
+	std::string result;
+	while (currentChar != '\0' && (isalnum(currentChar) || currentChar == '_')) {
+		result += currentChar;
+		advance();
+	}
+	return result;
+}
+
 Token Lexer::getNextToken() {
 
 	while (currentChar != '\0') {
@@ -90,6 +99,15 @@ Token Lexer::getNextToken() {
 		if (isspace(currentChar)) {
 			skipWhitespace();
 			continue;
+		}
+
+		// Identifiers and keywords
+		if (std::isalpha(currentChar) || currentChar == '_') {
+			std::string id = identifier();
+			// Check for keywords
+			if (id == "print") return { TokenType::PRINT, id };
+			// Return Name
+			return { TokenType::NAME, id };
 		}
 
 		if (isdigit(currentChar)) return { TokenType::NUMBER, number() };

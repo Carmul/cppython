@@ -20,13 +20,49 @@ void Parser::eat(TokenType type) {
 	}
 }
 
-// for now, just return expr
+// return the root of the AST (program node)
 ASTNodePtr Parser::parse() {
-	
+	return program();
+}
+
+// program : (statement NEWLINE)* EOF
+ASTNodePtr Parser::program() {
+	std::vector<ASTNodePtr> statements;
+
+	while (currentToken.type != TokenType::EOF_TOKEN) {
+
+		ASTNodePtr stmt = statement();
+		if (stmt) {
+			statements.push_back(std::move(stmt));
+		}
+		// If last line was not newline, break
+		if (currentToken.type == TokenType::EOF_TOKEN) {
+			break;
+		}
+		eat(TokenType::NEWLINE);
+		
+	}
+	return std::make_unique<ProgramNode>(std::move(statements));
+}
+
+// statement : print_statement | expr
+ASTNodePtr Parser::statement() {
+	if (currentToken.type == TokenType::PRINT) {
+		return print_statement();
+	}
 	return expr();
 }
 
-// term ( (PLUS | MINUS) term)*
+// print_statement : PRINT LPAR expr RPAR
+ASTNodePtr Parser::print_statement() {
+	eat(TokenType::PRINT);
+	eat(TokenType::LPAR);
+	auto node = expr();
+	eat(TokenType::RPAR);
+	return std::make_unique<PrintNode>(std::move(node));
+}
+
+// expr : term ( (PLUS | MINUS) term)*
 ASTNodePtr Parser::expr() {
 
 	auto node = term();
@@ -44,7 +80,7 @@ ASTNodePtr Parser::expr() {
 
 }
 
-// factor ( (MUL | DIV) factor)*
+// term : factor ( (MUL | DIV) factor)*
 ASTNodePtr Parser::term() {
 	ASTNodePtr node = factor();
 	while (currentToken.type == TokenType::MUL || currentToken.type == TokenType::DIV) {

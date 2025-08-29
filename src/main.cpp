@@ -8,6 +8,7 @@
 #include "dotGenerator.h"
 
 std::string readPythonFile(const std::string path);
+void debugInfo(std::string script);
 
 int main() {
     
@@ -16,50 +17,31 @@ int main() {
     std::cout << script << std::endl;
     std::cout << "====================" << std::endl << std::endl;
 
-    Lexer lexer = Lexer(script);
+	Lexer lexer(script); // create lexer
+	Parser parser(lexer); // create parser
+	ASTNodePtr tree = parser.parse(); // parse input to AST
+	Interpreter interpreter(std::move(tree)); // create interpreter
+	auto result = interpreter.interpret(); // interpret the AST
 
-    while (true) {
-        Token t = lexer.getNextToken();
-        std::cout << t.toString() << std::endl;
-        if (t.type == TokenType::EOF_TOKEN)
-            break;
-    }
-    std::cout << std::endl;
-    
+    debugInfo(script);
 
-    // interactive interpreter
+
+	// interactive interpreter ONLY ONE LINE SCRIPTS
     std::string line;
     while (true) {
         std::cout << ">>> ";
         std::getline(std::cin, line);
 		if (line.empty())
 			continue;
-        
-		// print tokens
-        Lexer lexer = Lexer(line);
-        while (true) {
-            Token t = lexer.getNextToken();
-            std::cout << t.toString() << std::endl;
-            if (t.type == TokenType::EOF_TOKEN)
-                break;
-        }
-        std::cout << std::endl;
-        
-		// parse and print AST
-		lexer = Lexer(line); // reset lexer
-		Parser parser(lexer);
        
-        ASTNodePtr tree = parser.parse();
-        std::cout << "AST: " << tree->toString() << std::endl;
+		Lexer lexer(line); // create lexer
+		Parser parser(lexer); // create parser
+		ASTNodePtr tree = parser.parse(); // parse input to AST
+		Interpreter interpreter(std::move(tree)); // create interpreter
+		auto result = interpreter.interpret(); // interpret the AST
+		std::cout << std::to_string(result) << std::endl;
 
-		// interpret and print result
-		Interpreter interpreter;
-		tree->accept(interpreter);
-		std::cout << "Result: " << interpreter.result << std::endl;
-
-		// generate and print DOT format
-		std::string dot = DotGenerator().generate(std::move(tree));
-		std::cout << "DOT format:\n" << dot << std::endl;
+		//debugInfo(line);
     }   
 
     return 0;
@@ -82,4 +64,27 @@ std::string readPythonFile(const std::string path) {
         s += line + "\n";
 
     return s;
+}
+
+
+void debugInfo(std::string script) {
+	std::cout << std::endl;
+	Lexer lexer = Lexer(script);
+	// print tokens
+	while (true) {
+		Token t = lexer.getNextToken();
+		std::cout << t.toString() << std::endl;
+		if (t.type == TokenType::EOF_TOKEN)
+			break;
+	}
+	std::cout << std::endl;
+
+	lexer = Lexer(script); // reset lexer
+	Parser parser(lexer); // create parser
+	ASTNodePtr tree = parser.parse(); // parse input to AST
+	// print AST
+	std::cout << "AST: " << tree->toString() << std::endl << std::endl;
+	// generate and print DOT format
+	std::string dot = DotGenerator().generate(std::move(tree));
+	std::cout << "DOT format:\n" << dot << std::endl;
 }
