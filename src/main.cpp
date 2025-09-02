@@ -12,41 +12,67 @@ void printDebugInfo(std::string script);
 void printTokens(const std::string script);
 void printAST(const std::string script);
 void printDOT(const std::string script);
+void interactiveMode();
 
 int main() {
     
     auto script = readPythonFile("C:\\Users\\stalm\\source\\repos\\CCPython\\test");
     std::cout << "====================" << std::endl;
     std::cout << script << std::endl;
-    std::cout << "====================" << std::endl << std::endl;
+    std::cout << "====================" << std::endl;
 
 
-	Lexer lexer(script); // create lexer
-	Parser parser(lexer); // create parser
-	ASTNodePtr tree = parser.parse(); // parse input to AST
-	Interpreter interpreter(std::move(tree)); // create interpreter
-	auto result = interpreter.interpret(); // interpret the AST
+	Lexer lexer(script);
+	Parser parser(lexer);
+	ASTNodePtr tree = parser.parse();
+	Interpreter interpreter(std::move(tree));
+	interpreter.interpret();
 
-	interpreter.printVariables();
+	//interactiveMode();
 
-	// interactive interpreter ONLY ONE LINE SCRIPTS
-    std::string line;
-    while (true) {
-        std::cout << ">>> ";
-        std::getline(std::cin, line);
-		if (line.empty())
-			continue;
-       
-		Lexer lexer(line); // create lexer
-		Parser parser(lexer); // create parser
-		ASTNodePtr tree = parser.parse(); // parse input to AST
-		Interpreter interpreter(std::move(tree)); // create interpreter
-		auto result = interpreter.interpret(); // interpret the AST
-		std::cout << std::to_string(result) << std::endl;
+    return 1;
+}
 
-    }   
 
-    return 0;
+// REPL - Read Eval Print Loop
+void interactiveMode() {
+
+	Interpreter interpreter(nullptr);
+	std::cout << "\n\nCPPython Interpreter By Carmul (2025)\n(type 'exit' to quit)\n";
+
+	while (true) {
+		std::cout << ">>> ";
+		std::string line;
+		std::getline(std::cin, line);
+		if (line == "exit" || line == "quit") break;
+		if (line.empty()) continue;
+
+		try {
+			Lexer lexer(line);
+			Parser parser(lexer);
+			ASTNodePtr tree = parser.parse();
+			interpreter.tree = std::move(tree); // saves the variables in the interpreter instance
+
+			auto result = interpreter.interpret(); // interpret the AST
+
+			// If the input is a single expression, print the result
+			if (auto prog = dynamic_cast<ProgramNode*>(interpreter.tree.get())) {
+				if (prog->statements.size() == 1) {
+					auto& stmt = prog->statements[0];
+					// If stmt is not AssignmentNode or PrintNode, treat it as expression
+					if (!dynamic_cast<AssignmentNode*>(stmt.get()) && !dynamic_cast<PrintNode*>(stmt.get())) {
+						std::cout << std::to_string(result) << std::endl;
+					}
+				}
+			}
+			
+		}
+		catch (const std::exception& e) {
+			std::cerr << "[-]	Error: " << e.what() << std::endl;
+		}
+	}
+
+	
 }
 
 

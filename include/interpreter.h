@@ -22,6 +22,6 @@ public:
 	void visit(const AssignmentNode& node) override;
 		
 private:
-	double result;
+	double result = 6969;
 	std::unordered_map<std::string, double> variables;
 };

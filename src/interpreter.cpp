@@ -63,7 +63,7 @@ void Interpreter::visit(const ProgramNode& node) {
 
 void Interpreter::visit(const PrintNode& node) {
 	node.expr->accept(*this);
-	std::cout << "((stdout)) " << result << std::endl;
+	std::cout << result << std::endl;
 }
 
 void Interpreter::visit(const VarNode& node) {
