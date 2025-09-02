@@ -58,3 +58,23 @@ void DotGenerator::visit(const PrintNode& node) {
 	dot += "    " + id + " -> " + exprId + ";\n";
 	stack.push_back({ id });
 }
+
+void DotGenerator::visit(const VarNode& node) {
+	std::string id = newId();
+	dot += "    " + id + " [label=\"" + node.getNodeType() + "[" + node.name + "]" + "\"];\n";
+	stack.push_back({ id });
+}
+
+void DotGenerator::visit(const AssignmentNode& node) {
+	std::string id = newId();
+	dot += "    " + id + " [label=\"" + node.getNodeType() + "\"];\n";
+	// Variable node
+	std::string varId = newId();
+	dot += "    " + varId + " [label=\"Var[" + node.varNode->toString() + "]\"];\n";
+	dot += "    " + id + " -> " + varId + ";\n";
+	// Value expression
+	node.value->accept(*this);
+	std::string valueId = stack.back().id; stack.pop_back();
+	dot += "    " + id + " -> " + valueId + ";\n";
+	stack.push_back({ id });
+}

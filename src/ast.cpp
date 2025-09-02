@@ -55,3 +55,13 @@ std::string PrintNode::toString() const {
 }
 
 std::string PrintNode::getNodeType() const { return "Print"; }
+
+
+// VarNode class
+VarNode::VarNode(const std::string n) : name(n) {}
+
+std::string VarNode::toString() const {
+	return name;
+}
+
+std::string VarNode::getNodeType() const { return "Var"; }

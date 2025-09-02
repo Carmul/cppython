@@ -15,6 +15,7 @@ std::string tokenTypeToString(TokenType type) {
 		case TokenType::RPAR:  return "RPAR";
 		case TokenType::PRINT: return "PRINT";
 		case TokenType::NAME:  return "NAME";
+		case TokenType::EQUAL: return "EQUAL";
 		case TokenType::EOF_TOKEN: return "EOF";
 		default:                 return "UNKNOWN";
 	}

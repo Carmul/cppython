@@ -13,6 +13,7 @@ enum class TokenType {
     DEDENT,
     PRINT,
     NAME,
+    EQUAL,
     EOF_TOKEN
 };
 

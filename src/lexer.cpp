@@ -14,7 +14,7 @@ void Lexer::advance() {
 }
 
 void Lexer::skipWhitespace() {
-	while (currentChar != '\0' && isspace(currentChar))
+	while (currentChar != '\0' && currentChar == ' ')
 		advance();
 }
 
@@ -118,6 +118,9 @@ Token Lexer::getNextToken() {
 		if (currentChar == '/') { advance(); return { TokenType::DIV, "/" }; }
 		if (currentChar == '(') { advance(); return { TokenType::LPAR, "(" }; }
 		if (currentChar == ')') { advance(); return { TokenType::RPAR, ")" }; }
+		if (currentChar == '=') { advance(); return { TokenType::EQUAL, "=" }; }
+
+
 
 		// Add more token types as needed
 		std::cerr << "Token Not Recognised" << std::endl;

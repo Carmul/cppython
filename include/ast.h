@@ -10,6 +10,8 @@ class BinaryOpNode;
 class UnaryOpNode;
 class ProgramNode;
 class PrintNode;
+class VarNode;
+class AssignmentNode;
 
 class ASTNode {
 public:
@@ -28,6 +30,8 @@ public:
 	virtual void visit(const UnaryOpNode& node) = 0;
 	virtual void visit(const ProgramNode& node) = 0;
 	virtual void visit(const PrintNode& node) = 0;
+	virtual void visit(const VarNode& node) = 0;
+	virtual void visit(const AssignmentNode& node) = 0;
 };
 
 using ASTNodePtr = std::unique_ptr<ASTNode>;
@@ -98,7 +102,40 @@ public:
     PrintNode(ASTNodePtr e);
     std::string toString() const override;
     std::string getNodeType() const override;
+
 	void accept(Visitor& v) const override {
 		v.visit(*this);
 	}
+};
+
+class VarNode : public ASTNode {
+public:
+    std::string name;
+
+    VarNode(const std::string n);
+    std::string toString() const override;
+    std::string getNodeType() const override;
+
+    void accept(Visitor& v) const override {
+        v.visit(*this);
+    }
+};
+
+class AssignmentNode : public ASTNode {
+public:
+    ASTNodePtr varNode;
+    ASTNodePtr value;
+
+    AssignmentNode(ASTNodePtr var, ASTNodePtr val) : varNode(std::move(var)), value(std::move(val)) {}
+
+    std::string toString() const override {
+        return varNode->toString() + " = " + value->toString();
+    }
+
+    std::string getNodeType() const override { return "Assignment"; }
+
+    void accept(Visitor& v) const override {
+        v.visit(*this);
+    }
+
 };

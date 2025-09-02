@@ -45,16 +45,32 @@ ASTNodePtr Parser::program() {
 	return std::make_unique<ProgramNode>(std::move(statements));
 }
 
-// statement : print_statement | expr
+// statement : print_stmt | assignment_stmt | expr
 ASTNodePtr Parser::statement() {
 	if (currentToken.type == TokenType::PRINT) {
-		return print_statement();
+		return print_stmt();
+	} 
+	else if (currentToken.type == TokenType::NAME) {
+		return assignment_stmt();
 	}
 	return expr();
 }
 
-// print_statement : PRINT LPAR expr RPAR
-ASTNodePtr Parser::print_statement() {
+ASTNodePtr Parser::assignment_stmt() {
+	if (currentToken.type == TokenType::NAME) {
+		std::string varName = currentToken.value;
+		eat(TokenType::NAME);
+		eat(TokenType::EQUAL);
+		// ASTNodePtr valueNode
+		// For now, we do not implement variable storage, return value of expr
+		return std::make_unique<AssignmentNode>(std::make_unique<VarNode>(varName), expr());
+	}
+	std::cerr << "Error: Invalid assignment statement, expected IDENTIFIER, got " << static_cast<int>(currentToken.type) << std::endl;
+	throw 1;
+}
+
+// print_stmt : PRINT LPAR expr RPAR
+ASTNodePtr Parser::print_stmt() {
 	eat(TokenType::PRINT);
 	eat(TokenType::LPAR);
 	auto node = expr();
@@ -97,7 +113,7 @@ ASTNodePtr Parser::term() {
 
 }
 
-// factor : (PLUS | NIMUS) factor | NUMBER | LPAR expr RPAR
+// factor : (PLUS | NIMUS) factor | NUMBER | LPAR expr RPAR | NAME
 ASTNodePtr Parser::factor() {
 	if (currentToken.type == TokenType::PLUS) {
 		std::string op = currentToken.value;
@@ -109,10 +125,14 @@ ASTNodePtr Parser::factor() {
 		eat(TokenType::MINUS);
 		return std::make_unique<UnaryOpNode>(op, factor());
 	}
-
 	if (currentToken.type == TokenType::NUMBER) {
 		auto node = std::make_unique<NumberNode>(currentToken.value);
 		eat(TokenType::NUMBER);
+		return node;
+	}
+	if (currentToken.type == TokenType::NAME) {
+		auto node = std::make_unique<VarNode>(currentToken.value);
+		eat(TokenType::NAME);
 		return node;
 	}
 	if (currentToken.type == TokenType::LPAR) {

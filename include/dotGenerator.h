@@ -11,6 +11,8 @@ public:
     void visit(const UnaryOpNode& node) override;
     void visit(const ProgramNode& node) override;
 	void visit(const PrintNode& node) override;
+	void visit(const VarNode& node) override;
+	void visit(const AssignmentNode& node) override;
 
 private:
     std::string dot;

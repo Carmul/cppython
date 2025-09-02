@@ -1,18 +1,18 @@
 # Python grammar
 
-# not implemented yet
 program : statement (NEWLINE statement)* EOF_TOKEN 
 
-statement : print_stmt | NEWLINE
+statement : print_stmt | assignment_stmt | expr
 
 print_stmt : PRINT LPAR expression RPAR
 
+assignment_stmt : NAME EQUAL expr
 
 
 expr : term ( (PLUS | MINUS) term)*
 	
 term : factor ( (MUL | DIV) factor)*
 	
-factor : (PLUS | MINUS) factor | NUMBER | LPAR expr RPAR
+factor : (PLUS | MINUS) factor | NUMBER | NAME | LPAR expr RPAR
 	
 	

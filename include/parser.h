@@ -15,12 +15,13 @@ private:
 	Token currentToken;
 	void eat(TokenType type);
 	// Grammar rules
-	ASTNodePtr  expr(); // expr : term ((PLUS | MINUS) term)*
-	ASTNodePtr  term(); // term : factor ((MUL | DIV) factor)*
-	ASTNodePtr  factor(); // factor : INTEGER | LPAREN expr RPAREN
-	ASTNodePtr  program(); // program : (statement NEWLINE)* EOF
-	ASTNodePtr statement(); // statement : print_statement | expr
-	ASTNodePtr print_statement(); // print_statement : PRINT LPAR expr RPAR
+	ASTNodePtr  expr();					// expr : term ((PLUS | MINUS) term)*
+	ASTNodePtr  term();					// term : factor ((MUL | DIV) factor)*
+	ASTNodePtr  factor();				// factor : INTEGER | LPAREN expr RPAREN
+	ASTNodePtr  program();				// program : (statement NEWLINE)* EOF
+	ASTNodePtr statement();				// statement : print_stmt | expr
+	ASTNodePtr print_stmt();		// print_stmt : PRINT LPAR expr RPAR
+	ASTNodePtr assignment_stmt();	// assignment_stmt : IDENTIFIER ASSIGN expr
 };
 
 

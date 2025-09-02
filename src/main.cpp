@@ -8,7 +8,10 @@
 #include "dotGenerator.h"
 
 std::string readPythonFile(const std::string path);
-void debugInfo(std::string script);
+void printDebugInfo(std::string script);
+void printTokens(const std::string script);
+void printAST(const std::string script);
+void printDOT(const std::string script);
 
 int main() {
     
@@ -17,13 +20,15 @@ int main() {
     std::cout << script << std::endl;
     std::cout << "====================" << std::endl << std::endl;
 
+
 	Lexer lexer(script); // create lexer
 	Parser parser(lexer); // create parser
 	ASTNodePtr tree = parser.parse(); // parse input to AST
 	Interpreter interpreter(std::move(tree)); // create interpreter
 	auto result = interpreter.interpret(); // interpret the AST
 
-    debugInfo(script);
+	interpreter.printVariables();
+	//printDOT(script);
 
 
 	// interactive interpreter ONLY ONE LINE SCRIPTS
@@ -41,7 +46,6 @@ int main() {
 		auto result = interpreter.interpret(); // interpret the AST
 		std::cout << std::to_string(result) << std::endl;
 
-		//debugInfo(line);
     }   
 
     return 0;
@@ -67,8 +71,7 @@ std::string readPythonFile(const std::string path) {
 }
 
 
-void debugInfo(std::string script) {
-	std::cout << std::endl;
+void printTokens(const std::string script) {
 	Lexer lexer = Lexer(script);
 	// print tokens
 	while (true) {
@@ -77,14 +80,30 @@ void debugInfo(std::string script) {
 		if (t.type == TokenType::EOF_TOKEN)
 			break;
 	}
-	std::cout << std::endl;
+}
 
-	lexer = Lexer(script); // reset lexer
+void printAST(const std::string script) {
+	Lexer lexer = Lexer(script);
 	Parser parser(lexer); // create parser
 	ASTNodePtr tree = parser.parse(); // parse input to AST
 	// print AST
 	std::cout << "AST: " << tree->toString() << std::endl << std::endl;
+}
+
+void printDOT(const std::string script) {
+	Lexer lexer = Lexer(script);
+	Parser parser(lexer); // create parser
+	ASTNodePtr tree = parser.parse(); // parse input to AST
 	// generate and print DOT format
 	std::string dot = DotGenerator().generate(std::move(tree));
 	std::cout << "DOT format:\n" << dot << std::endl;
+}
+
+void printDebugInfo(std::string script) {
+
+	printTokens(script);
+
+	printAST(script);
+
+	printDOT(script);
 }

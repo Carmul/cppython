@@ -1,6 +1,7 @@
 #include "ast.h"
 #include <string>
 #include <memory>
+#include <unordered_map>
 
 class Interpreter : public Visitor {
 public:
@@ -10,13 +11,17 @@ public:
 
 	double interpret();
 
+	void printVariables() const;
+
 	void visit(const NumberNode& node) override;
 	void visit(const BinaryOpNode& node) override;
 	void visit(const UnaryOpNode& node) override;
 	void visit(const ProgramNode& node) override;
 	void visit(const PrintNode& node) override;
+	void visit(const VarNode& node) override;
+	void visit(const AssignmentNode& node) override;
 		
 private:
 	double result;
-
+	std::unordered_map<std::string, double> variables;
 };

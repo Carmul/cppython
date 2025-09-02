@@ -2,6 +2,16 @@
 #include <string>
 
 
+void Interpreter::printVariables() const {
+	std::cout << "------------------\n";
+    std::cout << "Current Variables:\n";
+    for (const auto& [name, value] : variables) {
+        std::cout << "  " << name << " = " << value << "\n";
+    }
+    std::cout << "------------------\n";
+}
+
+
 double Interpreter::interpret() {
     if (tree) {
         tree->accept(*this);
@@ -15,7 +25,6 @@ double Interpreter::interpret() {
 
 void Interpreter::visit(const NumberNode& node) {
 	result = std::stod(node.value);
-	
 }
 
 void Interpreter::visit(const BinaryOpNode& node) {
@@ -55,4 +64,16 @@ void Interpreter::visit(const ProgramNode& node) {
 void Interpreter::visit(const PrintNode& node) {
 	node.expr->accept(*this);
 	std::cout << "((stdout)) " << result << std::endl;
+}
+
+void Interpreter::visit(const VarNode& node) {
+    if (variables.find(node.toString()) == variables.end()) {
+        throw std::runtime_error("Variable '" + node.toString() + "' not defined");
+	}
+	result = variables[node.toString()];
+}
+
+void Interpreter::visit(const AssignmentNode& node) {
+    node.value->accept(*this);
+	variables[node.varNode->toString()] = result;
 }
