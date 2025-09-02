@@ -4,3 +4,7 @@ z = x + y
 z = z * z
 
 print(z)
+4
+z
+x
+y

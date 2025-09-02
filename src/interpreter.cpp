@@ -68,6 +68,7 @@ void Interpreter::visit(const PrintNode& node) {
 
 void Interpreter::visit(const VarNode& node) {
     if (variables.find(node.toString()) == variables.end()) {
+		std::cerr << "Error: Variable '" << node.toString() << "' not defined." << std::endl;
         throw std::runtime_error("Variable '" + node.toString() + "' not defined");
 	}
 	result = variables[node.toString()];

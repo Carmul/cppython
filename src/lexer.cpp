@@ -132,3 +132,20 @@ Token Lexer::getNextToken() {
 	}
 	return { TokenType::EOF_TOKEN, "" };
 }
+
+Token Lexer::peekNextToken() {
+	// Save state
+	size_t savedPos = pos;
+	char savedChar = currentChar;
+	std::vector<int> savedIndentStack = indentStack;
+	int savedPendingDedents = pendingDedents;
+	bool savedLastWasNewline = lastWasNewline;
+	Token nextToken = getNextToken();
+	// Restore state
+	pos = savedPos;
+	currentChar = savedChar;
+	indentStack = savedIndentStack;
+	pendingDedents = savedPendingDedents;
+	lastWasNewline = savedLastWasNewline;
+	return nextToken;
+}

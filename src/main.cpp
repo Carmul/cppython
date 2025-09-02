@@ -28,8 +28,6 @@ int main() {
 	auto result = interpreter.interpret(); // interpret the AST
 
 	interpreter.printVariables();
-	//printDOT(script);
-
 
 	// interactive interpreter ONLY ONE LINE SCRIPTS
     std::string line;

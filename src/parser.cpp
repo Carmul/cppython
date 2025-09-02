@@ -51,7 +51,9 @@ ASTNodePtr Parser::statement() {
 		return print_stmt();
 	} 
 	else if (currentToken.type == TokenType::NAME) {
-		return assignment_stmt();
+		// Lookahead to check if next token is EQUAL, if so, it's an assignment, else it's an expr
+		if (lexer.peekNextToken().type == TokenType::EQUAL)
+			return assignment_stmt();
 	}
 	return expr();
 }
