@@ -143,6 +143,17 @@ ASTNodePtr Parser::factor() {
 		eat(TokenType::RPAR);
 		return node;
 	}
+	if (currentToken.type == TokenType::BOOLEAN) {
+		auto node = std::make_unique<BooleanNode>(currentToken.value);
+		eat(TokenType::BOOLEAN);
+		return node;
+	}
+	if (currentToken.type == TokenType::STRING) {
+		auto node = std::make_unique<StringNode>(currentToken.value);
+		eat(TokenType::STRING);
+		return node;
+	}
+
 	std::cerr << "Error: Invalide factor, got " << static_cast<int>(currentToken.type) << std::endl;
 	throw 1;
 }

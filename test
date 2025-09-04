@@ -4,7 +4,12 @@ z = x + y
 z = z * z
 
 print(z)
-4
-z
-x
-y
+
+print(True + 6)
+
+print("Hello, World!")
+
+print(2 * "carmel ")
+
+print("132" * 5)
+

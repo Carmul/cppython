@@ -78,3 +78,15 @@ void DotGenerator::visit(const AssignmentNode& node) {
 	dot += "    " + id + " -> " + valueId + ";\n";
 	stack.push_back({ id });
 }
+
+void DotGenerator::visit(const BooleanNode& node) {
+	std::string id = newId();
+	dot += "    " + id + " [label=\"" + node.getNodeType() + "[" + (node.value) + "]" + "\"];\n";
+	stack.push_back({ id });
+}
+
+void DotGenerator::visit(const StringNode& node) {
+	std::string id = newId();
+	dot += "    " + id + " [label=\"" + node.getNodeType() + "[\\\"" + node.value + "\\\"]" + "\"];\n";
+	stack.push_back({ id });
+}

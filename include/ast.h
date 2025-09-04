@@ -12,6 +12,8 @@ class ProgramNode;
 class PrintNode;
 class VarNode;
 class AssignmentNode;
+class BooleanNode;
+class StringNode;
 
 class ASTNode {
 public:
@@ -32,6 +34,8 @@ public:
 	virtual void visit(const PrintNode& node) = 0;
 	virtual void visit(const VarNode& node) = 0;
 	virtual void visit(const AssignmentNode& node) = 0;
+	virtual void visit(const BooleanNode& node) = 0;
+	virtual void visit(const StringNode& node) = 0;
 };
 
 using ASTNodePtr = std::unique_ptr<ASTNode>;
@@ -138,4 +142,37 @@ public:
         v.visit(*this);
     }
 
+};
+
+class BooleanNode : public ASTNode {
+public:
+    std::string value;
+
+    BooleanNode(std::string val) : value(val) {}
+
+    std::string toString() const override {
+        return value;
+    }
+
+    std::string getNodeType() const override { return "Boolean"; }
+
+    void accept(Visitor& v) const override {
+        v.visit(*this);
+    }
+};
+
+class StringNode : public ASTNode {
+    public:
+    std::string value;
+
+    StringNode(std::string val) : value(val) {}
+
+    std::string toString() const override {
+        return "\"" + value + "\"";
+    }
+    std::string getNodeType() const override { return "String"; }
+
+    void accept(Visitor& v) const override {
+        v.visit(*this);
+	}
 };

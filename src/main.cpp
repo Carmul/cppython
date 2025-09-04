@@ -21,14 +21,17 @@ int main() {
     std::cout << script << std::endl;
     std::cout << "====================" << std::endl;
 
+	printTokens(script);
+	printDOT(script);
 
 	Lexer lexer(script);
 	Parser parser(lexer);
 	ASTNodePtr tree = parser.parse();
 	Interpreter interpreter(std::move(tree));
+
 	interpreter.interpret();
 
-	//interactiveMode();
+	interactiveMode();
 
     return 1;
 }
@@ -53,7 +56,7 @@ void interactiveMode() {
 			ASTNodePtr tree = parser.parse();
 			interpreter.tree = std::move(tree); // saves the variables in the interpreter instance
 
-			auto result = interpreter.interpret(); // interpret the AST
+			Value result = interpreter.interpret(); // interpret the AST
 
 			// If the input is a single expression, print the result
 			if (auto prog = dynamic_cast<ProgramNode*>(interpreter.tree.get())) {
@@ -61,7 +64,9 @@ void interactiveMode() {
 					auto& stmt = prog->statements[0];
 					// If stmt is not AssignmentNode or PrintNode, treat it as expression
 					if (!dynamic_cast<AssignmentNode*>(stmt.get()) && !dynamic_cast<PrintNode*>(stmt.get())) {
-						std::cout << std::to_string(result) << std::endl;
+						if (result.isString())
+							std::cout << "\"" + result.toString() + "\"" << std::endl;
+						else std::cout << result.toString() << std::endl;
 					}
 				}
 			}

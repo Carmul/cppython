@@ -65,3 +65,4 @@ std::string VarNode::toString() const {
 }
 
 std::string VarNode::getNodeType() const { return "Var"; }
+

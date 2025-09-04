@@ -13,6 +13,8 @@ public:
 	void visit(const PrintNode& node) override;
 	void visit(const VarNode& node) override;
 	void visit(const AssignmentNode& node) override;
+	void visit(const BooleanNode& node) override;
+	void visit(const StringNode& node) override;
 
 private:
     std::string dot;

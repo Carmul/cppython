@@ -14,6 +14,8 @@ enum class TokenType {
     PRINT,
     NAME,
     EQUAL,
+    STRING,
+    BOOLEAN,
     EOF_TOKEN
 };
 

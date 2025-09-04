@@ -101,11 +101,30 @@ Token Lexer::getNextToken() {
 			continue;
 		}
 
+		// TODO: add single quote strings and escape sequences 
+		if (currentChar == '\"') {
+			advance(); // skip opening quote
+			std::string strVal;
+			while (currentChar != '\0' && currentChar != '\"') {
+				strVal += currentChar;
+				advance();
+			}
+			if (currentChar == '\"') {
+				advance(); // skip closing quote
+				return { TokenType::STRING, strVal };
+			} else {
+				std::cerr << "Error: Unterminated string literal" << std::endl;
+				throw 1;
+			}
+		}
+
 		// Identifiers and keywords
 		if (std::isalpha(currentChar) || currentChar == '_') {
 			std::string id = identifier();
 			// Check for keywords
 			if (id == "print") return { TokenType::PRINT, id };
+			if (id == "True") return { TokenType::BOOLEAN, "True"};
+			if (id == "False") return { TokenType::BOOLEAN, "False" };
 			// Return Name
 			return { TokenType::NAME, id };
 		}
