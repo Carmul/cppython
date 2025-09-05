@@ -24,6 +24,10 @@ std::string tokenTypeToString(TokenType type) {
 		case TokenType::GREATEREQUAL: return "GREATEREQUAL";
 		case TokenType::LESS:  return "LESS";
 		case TokenType::GREATER: return "GREATER";
+		case TokenType::COLON: return "COLON";
+		case TokenType::IF:    return "IF";
+		case TokenType::ELSE:  return "ELSE";
+		case TokenType::ELIF:  return "ELIF";
 		case TokenType::EOF_TOKEN: return "EOF";
 		default:                 return "UNKNOWN";
 	}

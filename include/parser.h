@@ -15,15 +15,22 @@ private:
 	Token currentToken;
 	void eat(TokenType type);
 	// Grammar rules
-	ASTNodePtr  expr();					// expr : arith_expr
+	ASTNodePtr  expr();					// expr : comparison
 	ASTNodePtr  comparison();			// comparison : arith_expr ( (EQEQUAL | NOTEQUAL | LESSEQUAL | GREATEREQUAL | LESS | GREATER) arith_expr )*
 	ASTNodePtr arith_expr();			// term ((PLUS | MINUS) term)*
 	ASTNodePtr  term();					// term : factor ((MUL | DIV) factor)*
 	ASTNodePtr  factor();				// factor : INTEGER | LPAREN expr RPAREN 
-	ASTNodePtr  program();				// program : (statement NEWLINE)* EOF
-	ASTNodePtr statement();				// statement : print_stmt | expr
-	ASTNodePtr print_stmt();		// print_stmt : PRINT LPAR expr RPAR
-	ASTNodePtr assignment_stmt();	// assignment_stmt : IDENTIFIER ASSIGN expr
+
+	ASTNodePtr  program();				// program : statements EOF_TOKEN
+	std::vector<ASTNodePtr> statements();// ( compound_statement | simple_statement NEWLINE )*
+	ASTNodePtr simple_stmt();		// simple_statement : print_stmt | assignment_stmt | expr
+	ASTNodePtr compound_stmt();	// compound_statement : if_statement
+	ASTNodePtr if_stmt();		// if_statement : IF expr COLON NEWLINE block ( elif_stmt | else? )
+	ASTNodePtr elif_stmt();		// elif_statement : ELIF expr COLON NEWLINE block ( elif_stmt | else? )
+	ASTNodePtr else_stmt();		// else_statement : ELSE COLON NEWLINE block
+	std::vector<ASTNodePtr> block();					// block : INDENT statements DEDENT
+	ASTNodePtr print_stmt();			// print_stmt : PRINT LPAR expr RPAR
+	ASTNodePtr assignment_stmt();		// assignment_stmt : IDENTIFIER ASSIGN expr
 };
 
 

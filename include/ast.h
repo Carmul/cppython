@@ -8,12 +8,13 @@ class Visitor;
 class NumberNode;
 class BinaryOpNode;
 class UnaryOpNode;
-class ProgramNode;
 class PrintNode;
 class VarNode;
 class AssignmentNode;
 class BooleanNode;
 class StringNode;
+class BlockNode;
+class IfNode;
 
 class ASTNode {
 public:
@@ -30,12 +31,13 @@ public:
     virtual void visit(const NumberNode& node) = 0;
     virtual void visit(const BinaryOpNode& node) = 0;
 	virtual void visit(const UnaryOpNode& node) = 0;
-	virtual void visit(const ProgramNode& node) = 0;
 	virtual void visit(const PrintNode& node) = 0;
 	virtual void visit(const VarNode& node) = 0;
 	virtual void visit(const AssignmentNode& node) = 0;
 	virtual void visit(const BooleanNode& node) = 0;
 	virtual void visit(const StringNode& node) = 0;
+	virtual void visit(const BlockNode& node) = 0;
+	virtual void visit(const IfNode& node) = 0;
 };
 
 using ASTNodePtr = std::unique_ptr<ASTNode>;
@@ -85,19 +87,7 @@ public:
     }
 };
 
-// Program node (root of the AST)
-class ProgramNode : public ASTNode {
-public:
-    std::vector<ASTNodePtr> statements;
 
-    ProgramNode(std::vector<ASTNodePtr> stmts);
-    std::string toString() const override;
-    std::string getNodeType() const override;
-
-    void accept(Visitor& v) const override {
-        v.visit(*this);
-    }
-};
 
 class PrintNode : public ASTNode {
 public:
@@ -175,4 +165,41 @@ class StringNode : public ASTNode {
     void accept(Visitor& v) const override {
         v.visit(*this);
 	}
+};
+
+class BlockNode : public ASTNode {
+    public:
+    std::vector<ASTNodePtr> statements;
+
+    BlockNode(std::vector<ASTNodePtr> stmts) : statements(std::move(stmts)) {}
+
+    std::string toString() const override {
+        std::string result = "Block:\n";
+        for (const auto& stmt : statements) {
+            result += "  " + stmt->toString() + "\n";
+        }
+        return result;
+    }
+
+    std::string getNodeType() const override { return "Block"; }
+    void accept(Visitor& v) const override {
+        v.visit(*this);
+	}
+};
+
+class IfNode : public ASTNode {
+public:
+    ASTNodePtr condition;
+    ASTNodePtr body;
+	ASTNodePtr elseBody; // Optional else body
+
+    IfNode(ASTNodePtr cond, ASTNodePtr b, ASTNodePtr eb = nullptr) : condition(std::move(cond)), body(std::move(b)), elseBody(std::move(eb)) {}
+
+    std::string toString() const override {
+        return "If " + condition->toString() + ":\n" + body->toString();
+    }
+    std::string getNodeType() const override { return "If"; }
+    void accept(Visitor& v) const override {
+        v.visit(*this);
+    }
 };

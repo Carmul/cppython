@@ -9,12 +9,13 @@ public:
     void visit(const NumberNode& node) override;
     void visit(const BinaryOpNode& node) override;
     void visit(const UnaryOpNode& node) override;
-    void visit(const ProgramNode& node) override;
 	void visit(const PrintNode& node) override;
 	void visit(const VarNode& node) override;
 	void visit(const AssignmentNode& node) override;
 	void visit(const BooleanNode& node) override;
 	void visit(const StringNode& node) override;
+	void visit(const BlockNode& node) override;
+	void visit(const IfNode& node) override;
 
 private:
     std::string dot;

@@ -128,11 +128,7 @@ void Interpreter::visit(const UnaryOpNode& node) {
     
 }
 
-void Interpreter::visit(const ProgramNode& node) {
-	for (const auto& stmt : node.statements) {
-		stmt->accept(*this);
-	}
-}
+
 
 void Interpreter::visit(const PrintNode& node) {
 	node.expr->accept(*this);
@@ -161,4 +157,22 @@ void Interpreter::visit(const BooleanNode& node) {
 
 void Interpreter::visit(const StringNode& node) {
     result = Value(node.value);
+}
+
+void Interpreter::visit(const BlockNode& node) {
+    for (const auto& stmt : node.statements) {
+        stmt->accept(*this);
+    }
+}
+
+void Interpreter::visit(const IfNode& node) {
+    node.condition->accept(*this);
+    Value cond = result;
+    if (cond.isTruthy()) {
+		node.body->accept(*this);
+    }
+    else {
+		if (node.elseBody)
+		    node.elseBody->accept(*this);
+	}
 }

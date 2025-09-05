@@ -33,20 +33,6 @@ std::string UnaryOpNode::toString() const {
 std::string UnaryOpNode::getNodeType() const { return "UnaryOp"; }
 
 
-// ProgramNode class
-ProgramNode::ProgramNode(std::vector<ASTNodePtr> stmts) : statements(std::move(stmts)) {}
-
-std::string ProgramNode::toString() const {
-	std::string result = "Program:\n";
-	for (const auto& stmt : statements) {
-		result += "  " + stmt->toString() + "\n";
-	}
-	return result;
-}
-
-std::string ProgramNode::getNodeType() const { return "Program"; }
-
-
 // PrintNode class
 PrintNode::PrintNode(ASTNodePtr expr) : expr(std::move(expr)) {}
 

@@ -15,13 +15,7 @@ void printDOT(const std::string script);
 void interactiveMode();
 
 int main() {
-    
-    auto script = readPythonFile("C:\\Users\\stalm\\source\\repos\\CCPython\\test");
-    std::cout << "====================" << std::endl;
-    std::cout << script << std::endl;
-    std::cout << "====================" << std::endl;
-
-	printDOT(script);
+    auto script = readPythonFile("C:\\Users\\stalm\\source\\repos\\CCPython\\test.py");
 
 	Lexer lexer(script);
 	Parser parser(lexer);
@@ -58,7 +52,7 @@ void interactiveMode() {
 			Value result = interpreter.interpret(); // interpret the AST
 
 			// If the input is a single expression, print the result
-			if (auto prog = dynamic_cast<ProgramNode*>(interpreter.tree.get())) {
+			if (auto prog = dynamic_cast<BlockNode*>(interpreter.tree.get())) {
 				if (prog->statements.size() == 1) {
 					auto& stmt = prog->statements[0];
 					// If stmt is not AssignmentNode or PrintNode, treat it as expression

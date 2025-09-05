@@ -1,4 +1,5 @@
 #include "parser.h"
+#include "Token.h"
 #include <memory.h>
 #include <iostream>
 
@@ -15,7 +16,7 @@ void Parser::eat(TokenType type) {
 		currentToken = lexer.getNextToken();
 	}
 	else {
-		std::cerr << "Error: expected token type " << static_cast<int>(type) << ", got " << static_cast<int>(currentToken.type) << std::endl;
+		std::cerr << "Error: expected token type " << tokenTypeToString(type) << ", got " << tokenTypeToString(currentToken.type) << std::endl;
 		throw 1;
 	}
 }
@@ -25,39 +26,109 @@ ASTNodePtr Parser::parse() {
 	return program();
 }
 
-// program : (statement NEWLINE)* EOF
+// program : statements EOF_TOKEN
 ASTNodePtr Parser::program() {
-	std::vector<ASTNodePtr> statements;
-
-	while (currentToken.type != TokenType::EOF_TOKEN) {
-
-		ASTNodePtr stmt = statement();
-		if (stmt) {
-			statements.push_back(std::move(stmt));
-		}
-		// If last line was not newline, break
-		if (currentToken.type == TokenType::EOF_TOKEN) {
-			break;
-		}
-		eat(TokenType::NEWLINE);
-		
-	}
-	return std::make_unique<ProgramNode>(std::move(statements));
+	std::vector<ASTNodePtr> stmts = statements();
+	eat(TokenType::EOF_TOKEN);
+	return std::make_unique<BlockNode>(std::move(stmts));
 }
 
-// statement : print_stmt | assignment_stmt | expr
-ASTNodePtr Parser::statement() {
+// statements : ( compound_statement | simple_statement NEWLINE )*
+std::vector<ASTNodePtr> Parser::statements() {
+	std::vector<ASTNodePtr> stmts;
+
+	while (currentToken.type != TokenType::EOF_TOKEN && currentToken.type != TokenType::DEDENT) {
+		
+		if (currentToken.type == TokenType::IF) { // add more compound statements here
+			stmts.push_back(compound_stmt());
+		}
+		else {
+			stmts.push_back(simple_stmt());
+			if (currentToken.type == TokenType::EOF_TOKEN) {
+				break;
+			}
+			eat(TokenType::NEWLINE);
+		}
+	}
+
+	return stmts;
+}
+
+// simple_stmt : print_stmt | assignment_stmt | expr
+ASTNodePtr Parser::simple_stmt() {
 	if (currentToken.type == TokenType::PRINT) {
 		return print_stmt();
 	} 
 	else if (currentToken.type == TokenType::NAME) {
-		// Lookahead to check if next token is EQUAL, if so, it's an assignment, else it's an expr
 		if (lexer.peekNextToken().type == TokenType::EQUAL)
 			return assignment_stmt();
 	}
 	return expr();
 }
 
+// compound_statement : if_statement
+ASTNodePtr Parser::compound_stmt() {
+	return if_stmt();
+}
+
+// if_statement : IF expr COLON NEWLINE block
+ASTNodePtr Parser::if_stmt() {
+	eat(TokenType::IF);
+	auto condition = expr();
+	eat(TokenType::COLON);
+	eat(TokenType::NEWLINE);
+	std::vector<ASTNodePtr> body = block();
+	auto ifnode = std::make_unique<IfNode>(std::move(condition), std::make_unique<BlockNode>(std::move(body)), nullptr);
+	// Handle optional elif and else
+	if (currentToken.type == TokenType::ELIF) {
+		auto elifNode = elif_stmt();
+		ifnode->elseBody = std::move(elifNode);
+	}
+	else if (currentToken.type == TokenType::ELSE) {
+		auto elseNode = else_stmt();
+		ifnode->elseBody = std::move(elseNode);
+	}
+	return ifnode;
+}
+
+// elif_statement : ELIF expr COLON NEWLINE block
+ASTNodePtr Parser::elif_stmt() {
+	eat(TokenType::ELIF);
+	auto condition = expr();
+	eat(TokenType::COLON);
+	eat(TokenType::NEWLINE);
+	std::vector<ASTNodePtr> body = block();
+	auto elifNode = std::make_unique<IfNode>(std::move(condition), std::make_unique<BlockNode>(std::move(body)), nullptr);
+	// Handle optional elif and else
+	if (currentToken.type == TokenType::ELIF) {
+		auto nextElifNode = elif_stmt();
+		elifNode->elseBody = std::move(nextElifNode);
+	}
+	else if (currentToken.type == TokenType::ELSE) {
+		auto elseNode = else_stmt();
+		elifNode->elseBody = std::move(elseNode);
+	}
+	return elifNode;
+}
+
+// else_statement : ELSE COLON NEWLINE block
+ASTNodePtr Parser::else_stmt() {
+	eat(TokenType::ELSE);
+	eat(TokenType::COLON);
+	eat(TokenType::NEWLINE);
+	std::vector<ASTNodePtr> body = block();
+	return std::make_unique<BlockNode>(std::move(body));
+}
+
+// block : INDENT statements DEDENT
+std::vector<ASTNodePtr> Parser::block() {
+	eat(TokenType::INDENT);
+	auto stmts = statements();
+	eat(TokenType::DEDENT);
+	return stmts;
+}
+
+// assignment_stmt : NAME EQUAL expr
 ASTNodePtr Parser::assignment_stmt() {
 	if (currentToken.type == TokenType::NAME) {
 		std::string varName = currentToken.value;

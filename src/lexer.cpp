@@ -125,6 +125,9 @@ Token Lexer::getNextToken() {
 			if (id == "print") return { TokenType::PRINT, id };
 			if (id == "True") return { TokenType::BOOLEAN, id };
 			if (id == "False") return { TokenType::BOOLEAN, id };
+			if (id == "if") return { TokenType::IF, id };
+			if (id == "else") return { TokenType::ELSE, id };
+			if (id == "elif") return { TokenType::ELIF, id };
 			// Return Name
 			return { TokenType::NAME, id };
 		}
@@ -137,6 +140,8 @@ Token Lexer::getNextToken() {
 		if (currentChar == '/') { advance(); return { TokenType::DIV, "/" }; }
 		if (currentChar == '(') { advance(); return { TokenType::LPAR, "(" }; }
 		if (currentChar == ')') { advance(); return { TokenType::RPAR, ")" }; }
+		if (currentChar == ':') { advance(); return { TokenType::COLON, ":" }; }
+
 
 		if (currentChar == '=') {
 			advance();

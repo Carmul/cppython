@@ -16,6 +16,7 @@ DIV			"/"
 LPAR		"("
 RPAR		")"
 EQUAL 		"="
+COLON		":"
 
 EQEQUAL                 '=='
 NOTEQUAL                '!='
@@ -25,3 +26,6 @@ LESS                    '<'
 GREATER                 '>'
 
 PRINT		"print"
+IF			"if"
+ELSE		"else"
+ELIF		"elif"

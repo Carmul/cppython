@@ -21,7 +21,11 @@ enum class TokenType {
     LESSEQUAL,
     GREATEREQUAL,
     LESS,
+    COLON,
+    IF,
+    ELSE,
     GREATER,
+    ELIF,
     EOF_TOKEN
 };
 
@@ -31,3 +35,5 @@ struct Token {
 
     std::string toString() const;
 };
+
+std::string tokenTypeToString(TokenType type);

@@ -1,8 +1,19 @@
 # Python grammar
 
-program : statement (NEWLINE statement)* EOF_TOKEN 
+	
+program : statements EOF_TOKEN
 
-statement : print_stmt | assignment_stmt | expr
+statements : ( compound_stmt | simple_stmt NEWLINE )*
+
+simple_stmt : print_stmt | assignment_stmt | expr
+
+compound_stmt : if_stmt
+
+if_stmt : IF expr COLON NEWLINE block else_stmt?
+
+else_stmt : ELSE COLON NEWLINE block
+
+block : INDENT statements DEDENT
 
 print_stmt : PRINT LPAR expression RPAR
 
@@ -18,5 +29,4 @@ arith_expr : term ( (PLUS | MINUS) term )*
 term : factor ( (MUL | DIV) factor )*
 	
 factor : (PLUS | MINUS) factor | NUMBER | NAME | LPAR expr RPAR | BOOLEAN | STRING
-	
 	
