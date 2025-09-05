@@ -80,8 +80,44 @@ ASTNodePtr Parser::print_stmt() {
 	return std::make_unique<PrintNode>(std::move(node));
 }
 
-// expr : term ( (PLUS | MINUS) term)*
+// expr : arith_expr
 ASTNodePtr Parser::expr() {
+	return comparison();
+}
+
+// comparison: arith_expr((EQEQUAL | NOTEQUAL | LESSEQUAL | GREATEREQUAL | LESS | GREATER) arith_expr)*
+ASTNodePtr Parser::comparison() {
+	auto node = arith_expr();
+	while (currentToken.type == TokenType::LESS || currentToken.type == TokenType::LESSEQUAL ||
+		currentToken.type == TokenType::GREATER || currentToken.type == TokenType::GREATEREQUAL ||
+		currentToken.type == TokenType::EQEQUAL || currentToken.type == TokenType::NOTEQUAL) {
+
+		std::string op = currentToken.value;
+		if (currentToken.type == TokenType::LESS) {
+			eat(TokenType::LESS);
+		}
+		else if (currentToken.type == TokenType::LESSEQUAL) {
+			eat(TokenType::LESSEQUAL);
+		}
+		else if (currentToken.type == TokenType::GREATER) {
+			eat(TokenType::GREATER);
+		}
+		else if (currentToken.type == TokenType::GREATEREQUAL) {
+			eat(TokenType::GREATEREQUAL);
+		}
+		else if (currentToken.type == TokenType::EQEQUAL) {
+			eat(TokenType::EQEQUAL);
+		}
+		else if (currentToken.type == TokenType::NOTEQUAL) {
+			eat(TokenType::NOTEQUAL);
+		}
+		node = std::make_unique<BinaryOpNode>(std::move(node), op, arith_expr());
+	}
+	return node;
+}
+
+// arith_expr : term ( (PLUS | MINUS) term)*
+ASTNodePtr Parser::arith_expr() {
 
 	auto node = term();
 	while (currentToken.type == TokenType::PLUS || currentToken.type == TokenType::MINUS) {

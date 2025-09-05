@@ -21,7 +21,6 @@ int main() {
     std::cout << script << std::endl;
     std::cout << "====================" << std::endl;
 
-	printTokens(script);
 	printDOT(script);
 
 	Lexer lexer(script);

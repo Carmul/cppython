@@ -17,4 +17,11 @@ LPAR		"("
 RPAR		")"
 EQUAL 		"="
 
+EQEQUAL                 '=='
+NOTEQUAL                '!='
+LESSEQUAL               '<='
+GREATEREQUAL            '>='
+LESS                    '<'
+GREATER                 '>'
+
 PRINT		"print"

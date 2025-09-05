@@ -9,7 +9,8 @@ print(True + 6)
 
 print("Hello, World!")
 
-print(2 * "carmel ")
+print(-(z - 2) / 4)
 
-print("132" * 5)
+print("123" * 9)
 
+print((1 == True) < 2 == False + 1 == True - 1 != False)

@@ -15,7 +15,9 @@ private:
 	Token currentToken;
 	void eat(TokenType type);
 	// Grammar rules
-	ASTNodePtr  expr();					// expr : term ((PLUS | MINUS) term)*
+	ASTNodePtr  expr();					// expr : arith_expr
+	ASTNodePtr  comparison();			// comparison : arith_expr ( (EQEQUAL | NOTEQUAL | LESSEQUAL | GREATEREQUAL | LESS | GREATER) arith_expr )*
+	ASTNodePtr arith_expr();			// term ((PLUS | MINUS) term)*
 	ASTNodePtr  term();					// term : factor ((MUL | DIV) factor)*
 	ASTNodePtr  factor();				// factor : INTEGER | LPAREN expr RPAREN 
 	ASTNodePtr  program();				// program : (statement NEWLINE)* EOF

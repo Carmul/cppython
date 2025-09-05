@@ -9,9 +9,13 @@ print_stmt : PRINT LPAR expression RPAR
 assignment_stmt : NAME EQUAL expr
 
 
-expr : term ( (PLUS | MINUS) term)*
+expr : comparison
+
+comparison : arith_expr ( (EQEQUAL | NOTEQUAL | LESSEQUAL | GREATEREQUAL | LESS | GREATER) arith_expr )*
+
+arith_expr : term ( (PLUS | MINUS) term )*
 	
-term : factor ( (MUL | DIV) factor)*
+term : factor ( (MUL | DIV) factor )*
 	
 factor : (PLUS | MINUS) factor | NUMBER | NAME | LPAR expr RPAR | BOOLEAN | STRING
 	

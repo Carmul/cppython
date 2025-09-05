@@ -18,6 +18,12 @@ std::string tokenTypeToString(TokenType type) {
 		case TokenType::EQUAL: return "EQUAL";
 		case TokenType::STRING:return "STRING";
 		case TokenType::BOOLEAN:return "BOOLEAN";
+		case TokenType::EQEQUAL: return "EQEQUAL";
+		case TokenType::NOTEQUAL: return "NOTEQUAL";
+		case TokenType::LESSEQUAL: return "LESSEQUAL";
+		case TokenType::GREATEREQUAL: return "GREATEREQUAL";
+		case TokenType::LESS:  return "LESS";
+		case TokenType::GREATER: return "GREATER";
 		case TokenType::EOF_TOKEN: return "EOF";
 		default:                 return "UNKNOWN";
 	}

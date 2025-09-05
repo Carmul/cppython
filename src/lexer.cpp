@@ -123,8 +123,8 @@ Token Lexer::getNextToken() {
 			std::string id = identifier();
 			// Check for keywords
 			if (id == "print") return { TokenType::PRINT, id };
-			if (id == "True") return { TokenType::BOOLEAN, "True"};
-			if (id == "False") return { TokenType::BOOLEAN, "False" };
+			if (id == "True") return { TokenType::BOOLEAN, id };
+			if (id == "False") return { TokenType::BOOLEAN, id };
 			// Return Name
 			return { TokenType::NAME, id };
 		}
@@ -137,14 +137,33 @@ Token Lexer::getNextToken() {
 		if (currentChar == '/') { advance(); return { TokenType::DIV, "/" }; }
 		if (currentChar == '(') { advance(); return { TokenType::LPAR, "(" }; }
 		if (currentChar == ')') { advance(); return { TokenType::RPAR, ")" }; }
-		if (currentChar == '=') { advance(); return { TokenType::EQUAL, "=" }; }
 
-
-
+		if (currentChar == '=') {
+			advance();
+			if (currentChar == '=') { advance(); return { TokenType::EQEQUAL, "==" }; }
+			return { TokenType::EQUAL, "=" };
+		}
+		if (currentChar == '<') {
+			advance();
+			if (currentChar == '=') { advance(); return { TokenType::LESSEQUAL, "<=" }; }
+			return { TokenType::LESS, "<" };
+		}
+		if (currentChar == '>') {
+			advance();
+			if (currentChar == '=') { advance(); return { TokenType::GREATEREQUAL, ">=" }; }
+			return { TokenType::GREATER, ">" };
+		}
+		if (currentChar == '!') {
+			advance();
+			if (currentChar == '=') { advance(); return { TokenType::NOTEQUAL, "!=" }; }
+			std::cerr << "Error: Unexpected character '!'" << std::endl;
+			throw 1;
+		}
 		// Add more token types as needed
-		std::cerr << "Token Not Recognised" << std::endl;
+		std::cerr << "Error: Unexpected character '" << currentChar << "'" << std::endl;
 		throw 1;
 	}
+	// Handle any remaining dedents at EOF
 	if (indentStack.size() > 1) {
 		indentStack.pop_back();
 		return { TokenType::DEDENT, "" };

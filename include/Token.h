@@ -16,6 +16,12 @@ enum class TokenType {
     EQUAL,
     STRING,
     BOOLEAN,
+    EQEQUAL,
+    NOTEQUAL,
+    LESSEQUAL,
+    GREATEREQUAL,
+    LESS,
+    GREATER,
     EOF_TOKEN
 };
 

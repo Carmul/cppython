@@ -72,6 +72,51 @@ void Interpreter::visit(const BinaryOpNode& node) {
         result = Value(lresult.asNumber() / rresult.asNumber());
     }
 
+    else if (node.op == "==") {
+        if (!(lresult.isString() || rresult.isString()))
+			result = Value(lresult.asNumber() == rresult.asNumber());
+        else if (lresult.isString() && rresult.isString())
+            result = Value(lresult.asString() == rresult.asString());
+        else
+            throw std::runtime_error("Type error in '==': cannot compare " + lresult.typeName() + " and " + rresult.typeName());
+    }
+    else if (node.op == "!=") {
+        if (!(lresult.isString() || rresult.isString()))
+            result = Value(lresult.asNumber() != rresult.asNumber());
+        else if (lresult.isString() && rresult.isString())
+            result = Value(lresult.asString() != rresult.asString());
+        else
+            throw std::runtime_error("Type error in '!=': cannot compare " + lresult.typeName() + " and " + rresult.typeName());
+    }
+    else if (node.op == "<") {
+        if (!(lresult.isString() || rresult.isString()))
+            result = Value(lresult.asNumber() < rresult.asNumber());
+        else
+            throw std::runtime_error("Type error in '<': cannot compare " + lresult.typeName() + " and " + rresult.typeName());
+    }
+    else if (node.op == "<=") {
+        if (!(lresult.isString() || rresult.isString()))
+            result = Value(lresult.asNumber() <= rresult.asNumber());
+        else
+            throw std::runtime_error("Type error in '<=': cannot compare " + lresult.typeName() + " and " + rresult.typeName());
+    }
+    else if (node.op == ">") {
+        if (!(lresult.isString() || rresult.isString()))
+            result = Value(lresult.asNumber() > rresult.asNumber());
+        else
+            throw std::runtime_error("Type error in '>': cannot compare " + lresult.typeName() + " and " + rresult.typeName());
+    }
+    else if (node.op == ">=") {
+        if (!(lresult.isString() || rresult.isString()))
+            result = Value(lresult.asNumber() >= rresult.asNumber());
+        else
+            throw std::runtime_error("Type error in '>=': cannot compare " + lresult.typeName() + " and " + rresult.typeName());
+    }
+    else {
+        throw std::runtime_error("Unknown binary operator: " + node.op);
+	}
+	
+
 }
 
 void Interpreter::visit(const UnaryOpNode& node) {
