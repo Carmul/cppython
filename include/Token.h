@@ -26,6 +26,7 @@ enum class TokenType {
     ELSE,
     GREATER,
     ELIF,
+    WHILE,
     EOF_TOKEN
 };
 

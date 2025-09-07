@@ -15,6 +15,7 @@ class BooleanNode;
 class StringNode;
 class BlockNode;
 class IfNode;
+class WhileNode;
 
 class ASTNode {
 public:
@@ -38,6 +39,7 @@ public:
 	virtual void visit(const StringNode& node) = 0;
 	virtual void visit(const BlockNode& node) = 0;
 	virtual void visit(const IfNode& node) = 0;
+	virtual void visit(const WhileNode& node) = 0;
 };
 
 using ASTNodePtr = std::unique_ptr<ASTNode>;
@@ -202,4 +204,22 @@ public:
     void accept(Visitor& v) const override {
         v.visit(*this);
     }
+};
+
+class WhileNode : public ASTNode {
+    public:
+    ASTNodePtr condition;
+    ASTNodePtr body;
+
+    WhileNode(ASTNodePtr cond, ASTNodePtr b) : condition(std::move(cond)), body(std::move(b)) {}
+
+    std::string toString() const override {
+        return "While " + condition->toString() + ":\n" + body->toString();
+    }
+
+    std::string getNodeType() const override { return "While"; }
+
+    void accept(Visitor& v) const override {
+        v.visit(*this);
+	}
 };

@@ -12,9 +12,15 @@ else:
 if flag:
     print("Flag is True")
 else:
-    print("Flag is False")
+    print("Flag is set to False")
 
 print("End of the program")
 
 if x:
     print("x is non-zero")
+
+
+num = 100
+while num > 0:
+    print(num)
+    num = num - 5

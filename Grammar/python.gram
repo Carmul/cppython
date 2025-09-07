@@ -11,7 +11,11 @@ compound_stmt : if_stmt
 
 if_stmt : IF expr COLON NEWLINE block else_stmt?
 
+elif_stmt : ELIF expr COLON NEWLINE block (else_stmt | elif_stmt)?
+
 else_stmt : ELSE COLON NEWLINE block
+
+while_stmt : WHILE expr COLON NEWLINE block
 
 block : INDENT statements DEDENT
 

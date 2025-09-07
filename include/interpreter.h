@@ -104,6 +104,7 @@ public:
 	void visit(const StringNode& node) override;
     void visit(const BlockNode& node) override;
 	void visit(const IfNode& node) override;
+	void visit(const WhileNode& node) override;
 		
 private:
 	std::unordered_map<std::string, Value> variables;

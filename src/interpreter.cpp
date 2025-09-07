@@ -176,3 +176,14 @@ void Interpreter::visit(const IfNode& node) {
 		    node.elseBody->accept(*this);
 	}
 }
+
+void Interpreter::visit(const WhileNode& node) {
+    node.condition->accept(*this);
+    Value cond = result;
+    while (cond.isTruthy()) {
+        node.body->accept(*this);
+
+        node.condition->accept(*this);
+        cond = result;
+    }
+}

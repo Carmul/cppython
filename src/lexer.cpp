@@ -128,6 +128,7 @@ Token Lexer::getNextToken() {
 			if (id == "if") return { TokenType::IF, id };
 			if (id == "else") return { TokenType::ELSE, id };
 			if (id == "elif") return { TokenType::ELIF, id };
+			if (id == "while") return { TokenType::WHILE, id };
 			// Return Name
 			return { TokenType::NAME, id };
 		}

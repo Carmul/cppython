@@ -28,6 +28,7 @@ std::string tokenTypeToString(TokenType type) {
 		case TokenType::IF:    return "IF";
 		case TokenType::ELSE:  return "ELSE";
 		case TokenType::ELIF:  return "ELIF";
+		case TokenType::WHILE: return "WHILE";
 		case TokenType::EOF_TOKEN: return "EOF";
 		default:                 return "UNKNOWN";
 	}

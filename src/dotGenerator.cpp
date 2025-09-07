@@ -110,3 +110,17 @@ void DotGenerator::visit(const IfNode& node) {
 		dot += "    " + id + " -> " + elseId + " [label=\"else\"];\n";
 	}
 }
+
+void DotGenerator::visit(const WhileNode& node) {
+	std::string id = newId();
+	dot += "    " + id + " [label=\"" + node.getNodeType() + "\"];\n";
+	// Condition
+	node.condition->accept(*this);
+	std::string condId = stack.back().id; stack.pop_back();
+	dot += "    " + id + " -> " + condId + " [label=\"condition\"];\n";
+	// Body
+	node.body->accept(*this);
+	std::string bodyId = stack.back().id; stack.pop_back();
+	dot += "    " + id + " -> " + bodyId + " [label=\"body\"];\n";
+	stack.push_back({ id });
+}

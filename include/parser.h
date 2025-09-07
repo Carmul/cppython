@@ -25,9 +25,10 @@ private:
 	std::vector<ASTNodePtr> statements();// ( compound_statement | simple_statement NEWLINE )*
 	ASTNodePtr simple_stmt();		// simple_statement : print_stmt | assignment_stmt | expr
 	ASTNodePtr compound_stmt();	// compound_statement : if_statement
-	ASTNodePtr if_stmt();		// if_statement : IF expr COLON NEWLINE block ( elif_stmt | else? )
-	ASTNodePtr elif_stmt();		// elif_statement : ELIF expr COLON NEWLINE block ( elif_stmt | else? )
+	ASTNodePtr if_stmt();		// if_statement : IF expr COLON NEWLINE block ( elif_stmt | else )?
+	ASTNodePtr elif_stmt();		// elif_statement : ELIF expr COLON NEWLINE block ( elif_stmt | else )?
 	ASTNodePtr else_stmt();		// else_statement : ELSE COLON NEWLINE block
+	ASTNodePtr while_stmt();	// while_statement : WHILE expr COLON NEWLINE block
 	std::vector<ASTNodePtr> block();					// block : INDENT statements DEDENT
 	ASTNodePtr print_stmt();			// print_stmt : PRINT LPAR expr RPAR
 	ASTNodePtr assignment_stmt();		// assignment_stmt : IDENTIFIER ASSIGN expr

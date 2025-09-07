@@ -39,7 +39,7 @@ std::vector<ASTNodePtr> Parser::statements() {
 
 	while (currentToken.type != TokenType::EOF_TOKEN && currentToken.type != TokenType::DEDENT) {
 		
-		if (currentToken.type == TokenType::IF) { // add more compound statements here
+		if (currentToken.type == TokenType::IF || currentToken.type == TokenType::WHILE) { // add more compound statements here
 			stmts.push_back(compound_stmt());
 		}
 		else {
@@ -68,7 +68,19 @@ ASTNodePtr Parser::simple_stmt() {
 
 // compound_statement : if_statement
 ASTNodePtr Parser::compound_stmt() {
-	return if_stmt();
+	if (currentToken.type == TokenType::WHILE)
+		return while_stmt();
+	else if (currentToken.type == TokenType::IF)
+		return if_stmt();
+}
+
+ASTNodePtr Parser::while_stmt() {
+	eat(TokenType::WHILE);
+	auto condition = expr();
+	eat(TokenType::COLON);
+	eat(TokenType::NEWLINE);
+	std::vector<ASTNodePtr> body = block();
+	return std::make_unique<WhileNode>(std::move(condition), std::make_unique<BlockNode>(std::move(body)));
 }
 
 // if_statement : IF expr COLON NEWLINE block
