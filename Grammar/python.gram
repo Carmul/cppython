@@ -5,9 +5,9 @@ program : statements EOF_TOKEN
 
 statements : ( compound_stmt | simple_stmt NEWLINE )*
 
-simple_stmt : print_stmt | assignment_stmt | expr
+simple_stmt : assignment_stmt | expr
 
-compound_stmt : if_stmt
+compound_stmt : if_stmt | while_stmt
 
 if_stmt : IF expr COLON NEWLINE block else_stmt?
 
@@ -19,12 +19,16 @@ while_stmt : WHILE expr COLON NEWLINE block
 
 block : INDENT statements DEDENT
 
-print_stmt : PRINT LPAR expression RPAR
-
 assignment_stmt : NAME EQUAL expr
 
 
-expr : comparison
+expr : disjunction
+
+disjunction : conjunction ( OR conjunction )*
+
+conjunction : inversion ( AND inversion )*
+
+inversion : comparison | NOT inversion
 
 comparison : arith_expr ( (EQEQUAL | NOTEQUAL | LESSEQUAL | GREATEREQUAL | LESS | GREATER) arith_expr )*
 

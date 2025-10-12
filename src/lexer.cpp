@@ -122,13 +122,15 @@ Token Lexer::getNextToken() {
 		if (std::isalpha(currentChar) || currentChar == '_') {
 			std::string id = identifier();
 			// Check for keywords
-			//if (id == "print") return { TokenType::PRINT, id };
 			if (id == "True") return { TokenType::BOOLEAN, id };
 			if (id == "False") return { TokenType::BOOLEAN, id };
 			if (id == "if") return { TokenType::IF, id };
 			if (id == "else") return { TokenType::ELSE, id };
 			if (id == "elif") return { TokenType::ELIF, id };
 			if (id == "while") return { TokenType::WHILE, id };
+			if (id == "not") return { TokenType::NOT, id };
+			if (id == "and") return { TokenType::AND, id };
+			if (id == "or") return { TokenType::OR, id };
 			// Return Name
 			return { TokenType::NAME, id };
 		}

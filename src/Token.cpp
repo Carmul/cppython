@@ -13,7 +13,6 @@ std::string tokenTypeToString(TokenType type) {
 		case TokenType::DEDENT:     return "DEDENT";
 		case TokenType::LPAR:  return "LPAR";
 		case TokenType::RPAR:  return "RPAR";
-		case TokenType::PRINT: return "PRINT";
 		case TokenType::NAME:  return "NAME";
 		case TokenType::EQUAL: return "EQUAL";
 		case TokenType::STRING:return "STRING";
@@ -30,6 +29,9 @@ std::string tokenTypeToString(TokenType type) {
 		case TokenType::ELIF:  return "ELIF";
 		case TokenType::WHILE: return "WHILE";
 		case TokenType::COMMA: return "COMMA";
+		case TokenType::OR: return "OR";
+		case TokenType::AND: return "AND";
+		case TokenType::NOT: return "NOT";
 		case TokenType::EOF_TOKEN: return "EOF";
 		default:                 return "UNKNOWN";
 	}

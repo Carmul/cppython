@@ -26,8 +26,11 @@ GREATEREQUAL            '>='
 LESS                    '<'
 GREATER                 '>'
 
-PRINT		"print"
 IF			"if"
 ELSE		"else"
 ELIF		"elif"
 WHILE		"while"
+
+AND			"and"
+OR			"or"
+NOT			"not"

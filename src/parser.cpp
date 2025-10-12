@@ -54,7 +54,7 @@ std::vector<ASTNodePtr> Parser::statements() {
 	return stmts;
 }
 
-// simple_stmt : print_stmt | assignment_stmt | expr
+// simple_stmt : assignment_stmt | expr
 ASTNodePtr Parser::simple_stmt() {
 	if (currentToken.type == TokenType::NAME) {
 		if (lexer.peekNextToken().type == TokenType::EQUAL)
@@ -151,14 +151,6 @@ ASTNodePtr Parser::assignment_stmt() {
 	throw 1;
 }
 
-// print_stmt : PRINT LPAR expr RPAR
-ASTNodePtr Parser::print_stmt() {
-	eat(TokenType::PRINT);
-	eat(TokenType::LPAR);
-	auto node = expr();
-	eat(TokenType::RPAR);
-	return std::make_unique<PrintNode>(std::move(node));
-}
 
 ASTNodePtr Parser::function_call(std::string func_name) {
 	// Not implemented yet
@@ -177,8 +169,41 @@ ASTNodePtr Parser::function_call(std::string func_name) {
 	return std::make_unique<FunctionCallNode>(func_name, std::move(args));
 }
 
-// expr : arith_expr
+
+// expr : disjunction
 ASTNodePtr Parser::expr() {
+	return disjunction();
+}
+
+// disjunction: conjunction ( OR conjunction )*
+ASTNodePtr Parser::disjunction() {
+	auto node = conjunction();
+	if(currentToken.type == TokenType::OR) {
+		std::string op = currentToken.value;
+		eat(TokenType::OR);
+		node = std::make_unique<BinaryOpNode>(std::move(node), op, disjunction());
+	}
+	return node;
+}
+
+// conjunction: inversion ( AND inversion )*
+ASTNodePtr Parser::conjunction() {
+	auto node = inversion();
+	if(currentToken.type == TokenType::AND) {
+		std::string op = currentToken.value;
+		eat(TokenType::AND);
+		node = std::make_unique<BinaryOpNode>(std::move(node), op, conjunction());
+	}
+	return node;
+}
+
+// inversion: not* comparison
+ASTNodePtr Parser::inversion() {
+	if (currentToken.type == TokenType::NOT) {
+		std::string op = currentToken.value;
+		eat(TokenType::NOT);
+		return std::make_unique<UnaryOpNode>(op, inversion());
+	}
 	return comparison();
 }
 

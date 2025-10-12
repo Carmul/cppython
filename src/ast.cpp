@@ -32,16 +32,6 @@ std::string UnaryOpNode::toString() const {
 std::string UnaryOpNode::getNodeType() const { return "UnaryOp"; }
 
 
-// PrintNode class
-PrintNode::PrintNode(ASTNodePtr expr) : expr(std::move(expr)) {}
-
-std::string PrintNode::toString() const {
-	return "Print(" + expr->toString() + ")";
-}
-
-std::string PrintNode::getNodeType() const { return "Print"; }
-
-
 // VarNode class
 VarNode::VarNode(const std::string n) : name(n) {}
 

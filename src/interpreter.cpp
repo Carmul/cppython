@@ -120,11 +120,15 @@ void Interpreter::visit(const BinaryOpNode& node) {
         else
             throw std::runtime_error("Type error in '>=': cannot compare " + lresult.typeName() + " and " + rresult.typeName());
     }
+    else if (node.op == "and") {
+        result = Value(lresult.isTruthy() && rresult.isTruthy());
+    }
+    else if (node.op == "or") {
+        result = Value(lresult.isTruthy() || rresult.isTruthy());
+	}
     else {
         throw std::runtime_error("Unknown binary operator: " + node.op);
 	}
-	
-
 }
 
 void Interpreter::visit(const UnaryOpNode& node) {
@@ -133,15 +137,10 @@ void Interpreter::visit(const UnaryOpNode& node) {
         ;// unary plus, do nothing
 	else if (node.op == "-")
 		result = Value(- result.asNumber());
-    
+	else if (node.op == "not")
+        result = Value(! result.isTruthy());
 }
 
-
-
-void Interpreter::visit(const PrintNode& node) {
-	node.expr->accept(*this);
-	std::cout << result.toString() << std::endl;
-}
 
 void Interpreter::visit(const VarNode& node) {
     if (variables.find(node.toString()) == variables.end()) {

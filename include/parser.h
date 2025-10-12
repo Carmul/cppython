@@ -15,7 +15,10 @@ private:
 	Token currentToken;
 	void eat(TokenType type);
 	// Grammar rules
-	ASTNodePtr  expr();					// expr : comparison
+	ASTNodePtr  expr();					// expr : comparison ( (OR | AND) comparison )*
+	ASTNodePtr  disjunction();			// disjunction : conjunction ( OR conjunction )*
+	ASTNodePtr  conjunction();			// conjunction : inversion ( AND inversion )*
+	ASTNodePtr  inversion();			// inversion : NOT inversion | comparison
 	ASTNodePtr  comparison();			// comparison : arith_expr ( (EQEQUAL | NOTEQUAL | LESSEQUAL | GREATEREQUAL | LESS | GREATER) arith_expr )*
 	ASTNodePtr arith_expr();			// term ((PLUS | MINUS) term)*
 	ASTNodePtr  term();					// term : factor ((MUL | DIV) factor)*
@@ -30,7 +33,6 @@ private:
 	ASTNodePtr else_stmt();		// else_statement : ELSE COLON NEWLINE block
 	ASTNodePtr while_stmt();	// while_statement : WHILE expr COLON NEWLINE block
 	std::vector<ASTNodePtr> block();					// block : INDENT statements DEDENT
-	ASTNodePtr print_stmt();			// print_stmt : PRINT LPAR expr RPAR
 	ASTNodePtr assignment_stmt();		// assignment_stmt : IDENTIFIER ASSIGN expr
 	ASTNodePtr function_call(std::string func_name);		// function_call : NAME LPAR (expr (COMMA expr)*)? RPAR
 };

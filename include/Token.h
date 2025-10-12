@@ -11,7 +11,6 @@ enum class TokenType {
     RPAR,
     INDENT,
     DEDENT,
-    PRINT,
     NAME,
     EQUAL,
     STRING,
@@ -28,6 +27,9 @@ enum class TokenType {
     ELIF,
     WHILE,
 	COMMA,
+    OR,
+    AND,
+    NOT,
     EOF_TOKEN
 };
 

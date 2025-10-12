@@ -40,15 +40,6 @@ void DotGenerator::visit(const BinaryOpNode& node) {
 }
 
 
-void DotGenerator::visit(const PrintNode& node) {
-	std::string id = newId();
-	dot += "    " + id + " [label=\"" + node.getNodeType() + "\"];\n";
-	node.expr->accept(*this);
-	std::string exprId = stack.back().id; stack.pop_back();
-	dot += "    " + id + " -> " + exprId + ";\n";
-	stack.push_back({ id });
-}
-
 void DotGenerator::visit(const VarNode& node) {
 	std::string id = newId();
 	dot += "    " + id + " [label=\"" + node.getNodeType() + "[" + node.name + "]" + "\"];\n";

@@ -8,7 +8,6 @@ class Visitor;
 class NumberNode;
 class BinaryOpNode;
 class UnaryOpNode;
-class PrintNode;
 class VarNode;
 class AssignmentNode;
 class BooleanNode;
@@ -33,7 +32,6 @@ public:
     virtual void visit(const NumberNode& node) = 0;
     virtual void visit(const BinaryOpNode& node) = 0;
 	virtual void visit(const UnaryOpNode& node) = 0;
-	virtual void visit(const PrintNode& node) = 0;
 	virtual void visit(const VarNode& node) = 0;
 	virtual void visit(const AssignmentNode& node) = 0;
 	virtual void visit(const BooleanNode& node) = 0;
@@ -91,20 +89,6 @@ public:
     }
 };
 
-
-
-class PrintNode : public ASTNode {
-public:
-	ASTNodePtr expr;
-
-    PrintNode(ASTNodePtr e);
-    std::string toString() const override;
-    std::string getNodeType() const override;
-
-	void accept(Visitor& v) const override {
-		v.visit(*this);
-	}
-};
 
 class VarNode : public ASTNode {
 public:

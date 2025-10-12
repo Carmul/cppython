@@ -17,9 +17,6 @@ void interactiveMode();
 int main() {
     auto script = readPythonFile("C:\\Users\\stalm\\source\\repos\\CCPython\\test.py");
 
-	//printTokens(script);
-	//return 0;
-
 	Lexer lexer(script);
 	Parser parser(lexer);
 	ASTNodePtr tree = parser.parse();
@@ -59,11 +56,12 @@ void interactiveMode() {
 			if (auto prog = dynamic_cast<BlockNode*>(interpreter.tree.get())) {
 				if (prog->statements.size() == 1) {
 					auto& stmt = prog->statements[0];
-					// If stmt is not AssignmentNode or PrintNode, treat it as expression
-					if (!dynamic_cast<AssignmentNode*>(stmt.get()) && !dynamic_cast<PrintNode*>(stmt.get())) {
+					// If stmt is not AssignmentNode, treat it as expression
+					if (!dynamic_cast<AssignmentNode*>(stmt.get())) {
 						if (result.isString())
 							std::cout << "\"" + result.toString() + "\"" << std::endl;
-						else std::cout << result.toString() << std::endl;
+						else 
+							std::cout << result.toString() << std::endl;
 					}
 				}
 			}
