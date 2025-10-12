@@ -1,3 +1,5 @@
+#pragma once
+
 #include "ast.h"
 #include <string>
 #include <vector>
@@ -17,6 +19,7 @@ public:
 	void visit(const BlockNode& node) override;
 	void visit(const IfNode& node) override;
 	void visit(const WhileNode& node) override;
+    void visit(const FunctionCallNode& node) override;
 
 private:
     std::string dot;

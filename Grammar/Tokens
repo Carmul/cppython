@@ -17,6 +17,7 @@ LPAR		"("
 RPAR		")"
 EQUAL 		"="
 COLON		":"
+COMMA		","
 
 EQEQUAL                 '=='
 NOTEQUAL                '!='

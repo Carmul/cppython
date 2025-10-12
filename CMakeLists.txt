@@ -13,7 +13,9 @@ set(SOURCES
     src/ast.cpp
     src/interpreter.cpp
     src/dotGenerator.cpp
-)
+    src/builtInFunctions.cpp
+    src/value.cpp
+    )
 
 # Header files
 set(HEADERS
@@ -23,6 +25,8 @@ set(HEADERS
     include/ast.h 
     include/interpreter.h
     include/dotGenerator.h
+    include/builtInFunctions.h
+    include/value.h
 )
 
 add_executable(CPPython ${SOURCES} ${HEADERS})

@@ -124,3 +124,15 @@ void DotGenerator::visit(const WhileNode& node) {
 	dot += "    " + id + " -> " + bodyId + " [label=\"body\"];\n";
 	stack.push_back({ id });
 }
+
+void DotGenerator::visit(const FunctionCallNode& node) {
+	std::string id = newId();
+	dot += "    " + id + " [label=\"" + node.getNodeType() + "[" + node.funcName + "]" + "\"];\n";
+	// Arguments
+	for (const auto& arg : node.arguments) {
+		arg->accept(*this);
+		std::string argId = stack.back().id; stack.pop_back();
+		dot += "    " + id + " -> " + argId + " [label=\"arg\"];\n";
+	}
+	stack.push_back({ id });
+}

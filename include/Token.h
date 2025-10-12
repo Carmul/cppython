@@ -27,6 +27,7 @@ enum class TokenType {
     GREATER,
     ELIF,
     WHILE,
+	COMMA,
     EOF_TOKEN
 };
 

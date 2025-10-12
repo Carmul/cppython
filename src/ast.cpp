@@ -1,6 +1,5 @@
 #include "ast.h"
 
-
 // NumberNode class
 NumberNode::NumberNode(const std::string val) : value(val) {}
 

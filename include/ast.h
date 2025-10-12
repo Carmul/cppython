@@ -16,6 +16,7 @@ class StringNode;
 class BlockNode;
 class IfNode;
 class WhileNode;
+class FunctionCallNode;
 
 class ASTNode {
 public:
@@ -40,6 +41,7 @@ public:
 	virtual void visit(const BlockNode& node) = 0;
 	virtual void visit(const IfNode& node) = 0;
 	virtual void visit(const WhileNode& node) = 0;
+	virtual void visit(const FunctionCallNode& node) = 0;
 };
 
 using ASTNodePtr = std::unique_ptr<ASTNode>;
@@ -222,4 +224,24 @@ class WhileNode : public ASTNode {
     void accept(Visitor& v) const override {
         v.visit(*this);
 	}
+};
+
+class FunctionCallNode : public ASTNode {
+    public:
+    std::string funcName;
+    std::vector<ASTNodePtr> arguments;
+    FunctionCallNode(const std::string& name, std::vector<ASTNodePtr> args) : funcName(name), arguments(std::move(args)) {}
+    std::string toString() const override {
+        std::string argsStr;
+        for (const auto& arg : arguments) {
+            if (!argsStr.empty()) argsStr += ", ";
+            argsStr += arg->toString();
+        }
+        return funcName + "(" + argsStr + ")";
+    }
+    std::string getNodeType() const override { return "FunctionCall"; }
+
+    void accept(Visitor& v) const override {
+        v.visit(*this);
+    }
 };

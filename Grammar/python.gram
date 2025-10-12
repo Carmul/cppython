@@ -32,5 +32,7 @@ arith_expr : term ( (PLUS | MINUS) term )*
 	
 term : factor ( (MUL | DIV) factor )*
 	
-factor : (PLUS | MINUS) factor | NUMBER | NAME | LPAR expr RPAR | BOOLEAN | STRING
+factor : (PLUS | MINUS) factor | NUMBER | NAME | LPAR expr RPAR | BOOLEAN | STRING | function_call
+
+function_call : NAME LPAR (expr (COMMA expr)*)? RPAR
 	

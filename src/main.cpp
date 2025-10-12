@@ -17,11 +17,15 @@ void interactiveMode();
 int main() {
     auto script = readPythonFile("C:\\Users\\stalm\\source\\repos\\CCPython\\test.py");
 
+	//printTokens(script);
+	//return 0;
+
 	Lexer lexer(script);
 	Parser parser(lexer);
 	ASTNodePtr tree = parser.parse();
 	Interpreter interpreter(std::move(tree));
 
+	printDOT(script);
 	interpreter.interpret();
 
 	interactiveMode();

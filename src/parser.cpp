@@ -56,10 +56,7 @@ std::vector<ASTNodePtr> Parser::statements() {
 
 // simple_stmt : print_stmt | assignment_stmt | expr
 ASTNodePtr Parser::simple_stmt() {
-	if (currentToken.type == TokenType::PRINT) {
-		return print_stmt();
-	} 
-	else if (currentToken.type == TokenType::NAME) {
+	if (currentToken.type == TokenType::NAME) {
 		if (lexer.peekNextToken().type == TokenType::EQUAL)
 			return assignment_stmt();
 	}
@@ -163,6 +160,23 @@ ASTNodePtr Parser::print_stmt() {
 	return std::make_unique<PrintNode>(std::move(node));
 }
 
+ASTNodePtr Parser::function_call(std::string func_name) {
+	// Not implemented yet
+	std::vector<ASTNodePtr> args;
+	eat(TokenType::LPAR);
+	if (currentToken.type != TokenType::RPAR) {
+		// Parse arguments (not implemented yet)
+		args.push_back(expr());
+		while (currentToken.type == TokenType::COMMA) {
+			eat(TokenType::COMMA);
+			args.push_back(expr());
+		}
+	}
+	eat(TokenType::RPAR);
+
+	return std::make_unique<FunctionCallNode>(func_name, std::move(args));
+}
+
 // expr : arith_expr
 ASTNodePtr Parser::expr() {
 	return comparison();
@@ -234,7 +248,7 @@ ASTNodePtr Parser::term() {
 
 }
 
-// factor : (PLUS | NIMUS) factor | NUMBER | LPAR expr RPAR | NAME
+// factor : (PLUS | NIMUS) factor | NUMBER | LPAR expr RPAR | NAME | BOOLEAN | STRING | function_call
 ASTNodePtr Parser::factor() {
 	if (currentToken.type == TokenType::PLUS) {
 		std::string op = currentToken.value;
@@ -252,8 +266,14 @@ ASTNodePtr Parser::factor() {
 		return node;
 	}
 	if (currentToken.type == TokenType::NAME) {
-		auto node = std::make_unique<VarNode>(currentToken.value);
+		std::string name = currentToken.value;
 		eat(TokenType::NAME);
+		// Check for function call
+		if (currentToken.type == TokenType::LPAR) {
+			
+			return function_call(name);
+		}
+		auto node = std::make_unique<VarNode>(name);
 		return node;
 	}
 	if (currentToken.type == TokenType::LPAR) {

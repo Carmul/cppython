@@ -122,7 +122,7 @@ Token Lexer::getNextToken() {
 		if (std::isalpha(currentChar) || currentChar == '_') {
 			std::string id = identifier();
 			// Check for keywords
-			if (id == "print") return { TokenType::PRINT, id };
+			//if (id == "print") return { TokenType::PRINT, id };
 			if (id == "True") return { TokenType::BOOLEAN, id };
 			if (id == "False") return { TokenType::BOOLEAN, id };
 			if (id == "if") return { TokenType::IF, id };
@@ -142,6 +142,7 @@ Token Lexer::getNextToken() {
 		if (currentChar == '(') { advance(); return { TokenType::LPAR, "(" }; }
 		if (currentChar == ')') { advance(); return { TokenType::RPAR, ")" }; }
 		if (currentChar == ':') { advance(); return { TokenType::COLON, ":" }; }
+		if (currentChar == ',') { advance(); return { TokenType::COMMA, "," }; }
 
 
 		if (currentChar == '=') {

@@ -29,6 +29,7 @@ std::string tokenTypeToString(TokenType type) {
 		case TokenType::ELSE:  return "ELSE";
 		case TokenType::ELIF:  return "ELIF";
 		case TokenType::WHILE: return "WHILE";
+		case TokenType::COMMA: return "COMMA";
 		case TokenType::EOF_TOKEN: return "EOF";
 		default:                 return "UNKNOWN";
 	}

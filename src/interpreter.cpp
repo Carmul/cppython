@@ -1,4 +1,5 @@
 #include "interpreter.h"
+#include "builtInFunctions.h"
 #include <string>
 
 
@@ -9,6 +10,13 @@ void Interpreter::printVariables() const {
         std::cout << "  " << name << " = " << value.toString() << "\n";
     }
     std::cout << "------------------\n";
+}
+
+void Interpreter::registetrBuiltins() {
+    builtins["print"] = printFunc;
+	builtins["println"] = printlnFunc;
+	builtins["max"] = maxFunc;
+	builtins["min"] = minFunc;
 }
 
 
@@ -187,3 +195,26 @@ void Interpreter::visit(const WhileNode& node) {
         cond = result;
     }
 }
+
+void Interpreter::visit(const FunctionCallNode& node) {
+
+	std::string funcName = node.funcName;
+	std::vector<Value> args;
+    for (const auto& argNode : node.arguments) {
+        argNode->accept(*this);
+        args.push_back(result);
+	}
+
+	// Handle built-in functions
+    if(builtins.find(funcName) != builtins.end()) {
+        result = builtins[funcName](args);
+        return;
+	}
+
+	// Handle user-defined functions (not implemented yet)
+	// For now, just throw an error
+	std::cerr << "Error: Function '" << funcName << "' not defined." << std::endl;
+    throw 1;
+}
+
+
