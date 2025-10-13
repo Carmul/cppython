@@ -32,6 +32,7 @@ std::string tokenTypeToString(TokenType type) {
 		case TokenType::OR: return "OR";
 		case TokenType::AND: return "AND";
 		case TokenType::NOT: return "NOT";
+		case TokenType::PERCENT: return "PERCENT";
 		case TokenType::EOF_TOKEN: return "EOF";
 		default:                 return "UNKNOWN";
 	}

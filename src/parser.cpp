@@ -256,10 +256,10 @@ ASTNodePtr Parser::arith_expr() {
 
 }
 
-// term : factor ( (MUL | DIV) factor)*
+// term : factor ( (MUL | DIV | PERCENT) factor)*
 ASTNodePtr Parser::term() {
 	ASTNodePtr node = factor();
-	while (currentToken.type == TokenType::MUL || currentToken.type == TokenType::DIV) {
+	while (currentToken.type == TokenType::MUL || currentToken.type == TokenType::DIV || currentToken.type == TokenType::PERCENT) {
 		std::string op = currentToken.value;
 		if (currentToken.type == TokenType::MUL) {
 			eat(TokenType::MUL);
@@ -267,13 +267,16 @@ ASTNodePtr Parser::term() {
 		else if (currentToken.type == TokenType::DIV) {
 			eat(TokenType::DIV);
 		}
+		else if (currentToken.type == TokenType::PERCENT) {
+			eat(TokenType::PERCENT);
+		}
 		node = std::make_unique<BinaryOpNode>(std::move(node), op, factor());
 	}
 	return node;
 
 }
 
-// factor : (PLUS | NIMUS) factor | NUMBER | LPAR expr RPAR | NAME | BOOLEAN | STRING | function_call
+// factor : (PLUS | NIMUS)? factor | NUMBER | LPAR expr RPAR | NAME | BOOLEAN | STRING | function_call
 ASTNodePtr Parser::factor() {
 	if (currentToken.type == TokenType::PLUS) {
 		std::string op = currentToken.value;

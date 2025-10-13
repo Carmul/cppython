@@ -126,6 +126,9 @@ void Interpreter::visit(const BinaryOpNode& node) {
     else if (node.op == "or") {
         result = Value(lresult.isTruthy() || rresult.isTruthy());
 	}
+    else if (node.op == "%") {
+        result = Value(static_cast<double>(static_cast<int>(lresult.asNumber()) % static_cast<int>(rresult.asNumber())));
+	}
     else {
         throw std::runtime_error("Unknown binary operator: " + node.op);
 	}

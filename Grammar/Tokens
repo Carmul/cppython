@@ -25,6 +25,7 @@ LESSEQUAL               '<='
 GREATEREQUAL            '>='
 LESS                    '<'
 GREATER                 '>'
+PERCENT                 '%'
 
 IF			"if"
 ELSE		"else"

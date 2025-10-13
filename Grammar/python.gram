@@ -34,7 +34,7 @@ comparison : arith_expr ( (EQEQUAL | NOTEQUAL | LESSEQUAL | GREATEREQUAL | LESS 
 
 arith_expr : term ( (PLUS | MINUS) term )*
 	
-term : factor ( (MUL | DIV) factor )*
+term : factor ( (MUL | DIV | PERCENT) factor )*
 	
 factor : (PLUS | MINUS) factor | NUMBER | NAME | LPAR expr RPAR | BOOLEAN | STRING | function_call
 

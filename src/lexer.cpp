@@ -145,6 +145,7 @@ Token Lexer::getNextToken() {
 		if (currentChar == ')') { advance(); return { TokenType::RPAR, ")" }; }
 		if (currentChar == ':') { advance(); return { TokenType::COLON, ":" }; }
 		if (currentChar == ',') { advance(); return { TokenType::COMMA, "," }; }
+		if (currentChar == '%') { advance(); return { TokenType::PERCENT, "%" }; }
 
 
 		if (currentChar == '=') {

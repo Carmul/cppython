@@ -30,6 +30,7 @@ enum class TokenType {
     OR,
     AND,
     NOT,
+    PERCENT,
     EOF_TOKEN
 };
 
