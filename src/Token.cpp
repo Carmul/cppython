@@ -34,6 +34,7 @@ std::string tokenTypeToString(TokenType type) {
 		case TokenType::NOT: return "NOT";
 		case TokenType::PERCENT: return "PERCENT";
 		case TokenType::DEF: return "DEF";
+		case TokenType::RETURN: return "RETURN";
 		case TokenType::EOF_TOKEN: return "EOF";
 		default:                 return "UNKNOWN";
 	}

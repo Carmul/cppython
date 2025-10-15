@@ -32,6 +32,7 @@ enum class TokenType {
     NOT,
     PERCENT,
     DEF,
+    RETURN,
     EOF_TOKEN
 };
 

@@ -53,11 +53,14 @@ std::vector<ASTNodePtr> Parser::statements() {
 	return stmts;
 }
 
-// simple_stmt : assignment_stmt | expr
+// simple_stmt : assignment_stmt | return_stmt | expr
 ASTNodePtr Parser::simple_stmt() {
 	if (currentToken.type == TokenType::NAME) {
 		if (lexer.peekNextToken().type == TokenType::EQUAL)
 			return assignment_stmt();
+	}
+	else if (currentToken.type == TokenType::RETURN) {
+		return return_stmt();
 	}
 	return expr();
 }
@@ -197,6 +200,15 @@ ASTNodePtr Parser::function_call(std::string func_name) {
 	eat(TokenType::RPAR);
 
 	return std::make_unique<FunctionCallNode>(func_name, std::move(args));
+}
+
+ASTNodePtr Parser::return_stmt() {
+	eat(TokenType::RETURN);
+	if (currentToken.type == TokenType::NEWLINE) {
+		// return without value
+		return std::make_unique<ReturnNode>(nullptr);
+	}
+	return std::make_unique<ReturnNode>(expr());
 }
 
 

@@ -34,6 +34,7 @@ public:
 	void visit(const WhileNode& node) override;
     void visit(const FunctionCallNode& node) override;
 	void visit(FunctionDefNode& node) override;
+	void visit(ReturnNode& node) override;
 
 private:
 	std::unordered_map<std::string, Value> variables;

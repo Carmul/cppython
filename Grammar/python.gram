@@ -5,7 +5,7 @@ program : statements EOF_TOKEN
 
 statements : ( compound_stmt | simple_stmt NEWLINE )*
 
-simple_stmt : assignment_stmt | expr
+simple_stmt : assignment_stmt | return_stmt | expr
 
 compound_stmt : if_stmt | while_stmt | function_def
 
@@ -22,6 +22,8 @@ block : INDENT statements DEDENT
 assignment_stmt : NAME EQUAL expr
 
 function_def : DEF NAME LPAR (NAME (COMMA NAME)*)? RPAR COLON NEWLINE block
+
+return_stmt : RETURN expr
 
 
 expr : disjunction

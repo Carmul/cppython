@@ -36,6 +36,7 @@ private:
 	ASTNodePtr assignment_stmt();		// assignment_stmt : IDENTIFIER ASSIGN expr
 	ASTNodePtr function_call(std::string func_name);		// function_call : NAME LPAR (expr (COMMA expr)*)? RPAR
 	ASTNodePtr function_def(); // function_def : DEF NAME LPAR (NAME (COMMA NAME)*)? RPAR COLON NEWLINE block
+	ASTNodePtr return_stmt(); // return_stmt : RETURN expr
 };
 
 

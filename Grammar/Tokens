@@ -32,6 +32,7 @@ ELSE		"else"
 ELIF		"elif"
 WHILE		"while"
 DEF			"def"
+RETURN		"return"
 
 AND			"and"
 OR			"or"

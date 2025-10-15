@@ -143,3 +143,13 @@ void DotGenerator::visit(FunctionDefNode& node) {
 	dot += "    " + id + " -> " + bodyId + " [label=\"body\"];\n";
 	stack.push_back({ id });
 }
+
+void DotGenerator::visit(ReturnNode& node) {
+	std::string id = newId();
+	dot += "    " + id + " [label=\"" + node.getNodeType() + "\"];\n";
+	// Value expression
+	node.value->accept(*this);
+	std::string valueId = stack.back().id; stack.pop_back();
+	dot += "    " + id + " -> " + valueId + ";\n";
+	stack.push_back({ id });
+}

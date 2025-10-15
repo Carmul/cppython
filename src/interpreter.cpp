@@ -227,7 +227,14 @@ void Interpreter::visit(const FunctionCallNode& node) {
             variables[funcDef->parameters[i]] = args[i];
         }
         // Execute function body
-        funcDef->body->accept(*this);
+        try {
+            funcDef->body->accept(*this);
+        }
+        catch (const Value& returnValue) {
+            result = returnValue; // Capture return value
+        }
+        // Restore previous variables
+		variables = savedVariables;
         // Restore previous variables
         variables = savedVariables;
 		callStack.pop_back();
@@ -253,3 +260,10 @@ void Interpreter::visit(FunctionDefNode& node) {
     
 }
 
+void Interpreter::visit(ReturnNode& node) {
+    if (node.value != nullptr) {
+        node.value->accept(*this);
+        throw result;
+    }
+	throw Value(); // return None
+}

@@ -130,6 +130,7 @@ Token Lexer::getNextToken() {
 			if (id == "and") return { TokenType::AND, id };
 			if (id == "or") return { TokenType::OR, id };
 			if (id == "def") return { TokenType::DEF, id };
+			if (id == "return") return { TokenType::RETURN, id };
 			// Return Name
 			return { TokenType::NAME, id };
 		}

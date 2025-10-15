@@ -17,6 +17,7 @@ class IfNode;
 class WhileNode;
 class FunctionCallNode;
 class FunctionDefNode;
+class ReturnNode;
 
 class ASTNode {
 public:
@@ -42,6 +43,7 @@ public:
 	virtual void visit(const WhileNode& node) = 0;
 	virtual void visit(const FunctionCallNode& node) = 0;
 	virtual void visit(FunctionDefNode& node) = 0;
+	virtual void visit(ReturnNode& node) = 0;
 };
 
 using ASTNodePtr = std::unique_ptr<ASTNode>;
@@ -258,4 +260,17 @@ public:
     }
 
 
+};
+
+class ReturnNode : public ASTNode {
+    public:
+    ASTNodePtr value;
+    ReturnNode(ASTNodePtr val) : value(std::move(val)) {}
+    std::string toString() const override {
+        return "return " + value->toString();
+    }
+    std::string getNodeType() const override { return "Return"; }
+    void accept(Visitor& v) override {
+		v.visit(*this);
+	}
 };
