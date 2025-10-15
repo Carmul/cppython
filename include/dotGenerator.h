@@ -19,6 +19,7 @@ public:
 	void visit(const IfNode& node) override;
 	void visit(const WhileNode& node) override;
     void visit(const FunctionCallNode& node) override;
+    void visit(FunctionDefNode& node) override;
 
 private:
     std::string dot;

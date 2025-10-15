@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <chrono>
 
 
 Value printFunc(const std::vector<Value>& args) {
@@ -46,4 +47,13 @@ Value minFunc(const std::vector<Value>& args) {
         }
     }
     return Value(minVal);
+}
+
+Value nowFunc(const std::vector<Value>& args) {
+    if (!args.empty()) {
+        throw std::runtime_error("now() takes no arguments");
+    }
+    // Return current time as a string
+	auto time = std::chrono::system_clock::now();
+
 }

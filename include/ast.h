@@ -16,6 +16,7 @@ class BlockNode;
 class IfNode;
 class WhileNode;
 class FunctionCallNode;
+class FunctionDefNode;
 
 class ASTNode {
 public:
@@ -23,7 +24,7 @@ public:
     virtual std::string toString() const = 0;
     virtual std::string getNodeType() const = 0;
 
-    virtual void accept(Visitor& v) const = 0; // accept a visitor
+    virtual void accept(Visitor& v) = 0; // accept a visitor
 };
 
 // Visitor interface for AST nodes
@@ -40,6 +41,7 @@ public:
 	virtual void visit(const IfNode& node) = 0;
 	virtual void visit(const WhileNode& node) = 0;
 	virtual void visit(const FunctionCallNode& node) = 0;
+	virtual void visit(FunctionDefNode& node) = 0;
 };
 
 using ASTNodePtr = std::unique_ptr<ASTNode>;
@@ -53,7 +55,7 @@ public:
     std::string toString() const override;
     std::string getNodeType() const override;
 
-    void accept(Visitor& v) const override {
+    void accept(Visitor& v) override {
         v.visit(*this);
     }
 };
@@ -69,7 +71,7 @@ public:
     std::string toString() const override;
     std::string getNodeType() const override;
 
-    void accept(Visitor& v) const override {
+    void accept(Visitor& v) override {
         v.visit(*this);
     }
 };
@@ -84,7 +86,7 @@ public:
     std::string toString() const override;
     std::string getNodeType() const override;
 
-    void accept(Visitor& v) const override {
+    void accept(Visitor& v) override {
         v.visit(*this);
     }
 };
@@ -98,7 +100,7 @@ public:
     std::string toString() const override;
     std::string getNodeType() const override;
 
-    void accept(Visitor& v) const override {
+    void accept(Visitor& v) override {
         v.visit(*this);
     }
 };
@@ -116,7 +118,7 @@ public:
 
     std::string getNodeType() const override { return "Assignment"; }
 
-    void accept(Visitor& v) const override {
+    void accept(Visitor& v) override {
         v.visit(*this);
     }
 
@@ -134,7 +136,7 @@ public:
 
     std::string getNodeType() const override { return "Boolean"; }
 
-    void accept(Visitor& v) const override {
+    void accept(Visitor& v) override {
         v.visit(*this);
     }
 };
@@ -150,7 +152,7 @@ class StringNode : public ASTNode {
     }
     std::string getNodeType() const override { return "String"; }
 
-    void accept(Visitor& v) const override {
+    void accept(Visitor& v) override {
         v.visit(*this);
 	}
 };
@@ -170,7 +172,7 @@ class BlockNode : public ASTNode {
     }
 
     std::string getNodeType() const override { return "Block"; }
-    void accept(Visitor& v) const override {
+    void accept(Visitor& v) override {
         v.visit(*this);
 	}
 };
@@ -187,7 +189,7 @@ public:
         return "If " + condition->toString() + ":\n" + body->toString();
     }
     std::string getNodeType() const override { return "If"; }
-    void accept(Visitor& v) const override {
+    void accept(Visitor& v) override {
         v.visit(*this);
     }
 };
@@ -205,7 +207,7 @@ class WhileNode : public ASTNode {
 
     std::string getNodeType() const override { return "While"; }
 
-    void accept(Visitor& v) const override {
+    void accept(Visitor& v) override {
         v.visit(*this);
 	}
 };
@@ -225,7 +227,35 @@ class FunctionCallNode : public ASTNode {
     }
     std::string getNodeType() const override { return "FunctionCall"; }
 
-    void accept(Visitor& v) const override {
+    void accept(Visitor& v) override {
         v.visit(*this);
     }
+};
+
+class FunctionDefNode : public ASTNode {
+public:
+    std::string funcName;
+    std::vector<std::string> parameters;
+    ASTNodePtr body;
+
+    FunctionDefNode(const std::string& name, std::vector<std::string> params, ASTNodePtr b)
+        : funcName(name), parameters(std::move(params)), body(std::move(b)) {}
+
+ 
+    std::string toString() const override {
+        std::string paramsStr;
+        for (const auto& param : parameters) {
+            if (!paramsStr.empty()) paramsStr += ", ";
+            paramsStr += param;
+        }
+        return "def " + funcName + "(" + paramsStr + "):\n" + body->toString();
+    }
+
+    std::string getNodeType() const override { return "FunctionDef"; }
+
+    void accept(Visitor& v) override {
+        v.visit(*this);
+    }
+
+
 };

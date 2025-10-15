@@ -1,4 +1,4 @@
-# Python grammar
+# Implimented Python grammar
 
 	
 program : statements EOF_TOKEN
@@ -7,7 +7,7 @@ statements : ( compound_stmt | simple_stmt NEWLINE )*
 
 simple_stmt : assignment_stmt | expr
 
-compound_stmt : if_stmt | while_stmt
+compound_stmt : if_stmt | while_stmt | function_def
 
 if_stmt : IF expr COLON NEWLINE block else_stmt?
 
@@ -20,6 +20,8 @@ while_stmt : WHILE expr COLON NEWLINE block
 block : INDENT statements DEDENT
 
 assignment_stmt : NAME EQUAL expr
+
+function_def : DEF NAME LPAR (NAME (COMMA NAME)*)? RPAR COLON NEWLINE block
 
 
 expr : disjunction

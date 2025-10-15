@@ -74,8 +74,7 @@ Token Lexer::getNextToken() {
 			}
 			
 			if (spaceCount % 4 != 0) {
-				std::cerr << "IndentationError: unexpected indent" << std::endl;
-				throw 1;
+				throw "IndentationError: unexpected indent";
 			}
 			 
 			if (spaceCount / 4 > indentStack.back()) {
@@ -113,8 +112,7 @@ Token Lexer::getNextToken() {
 				advance(); // skip closing quote
 				return { TokenType::STRING, strVal };
 			} else {
-				std::cerr << "Error: Unterminated string literal" << std::endl;
-				throw 1;
+				throw "Error: Unterminated string literal";
 			}
 		}
 
@@ -131,6 +129,7 @@ Token Lexer::getNextToken() {
 			if (id == "not") return { TokenType::NOT, id };
 			if (id == "and") return { TokenType::AND, id };
 			if (id == "or") return { TokenType::OR, id };
+			if (id == "def") return { TokenType::DEF, id };
 			// Return Name
 			return { TokenType::NAME, id };
 		}
@@ -166,11 +165,10 @@ Token Lexer::getNextToken() {
 		if (currentChar == '!') {
 			advance();
 			if (currentChar == '=') { advance(); return { TokenType::NOTEQUAL, "!=" }; }
-			std::cerr << "Error: Unexpected character '!'" << std::endl;
-			throw 1;
+			throw "Error: Unexpected character '!'";
 		}
 		// Add more token types as needed
-		std::cerr << "Error: Unexpected character '" << currentChar << "'" << std::endl;
+		std::cerr << "Error: Unexpected character '" << currentChar + "'" << std::endl;
 		throw 1;
 	}
 	// Handle any remaining dedents at EOF

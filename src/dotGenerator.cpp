@@ -127,3 +127,19 @@ void DotGenerator::visit(const FunctionCallNode& node) {
 	}
 	stack.push_back({ id });
 }
+
+void DotGenerator::visit(FunctionDefNode& node) {
+	// please write the params not as children but as labels on the function node
+	std::string id = newId();
+	std::string paramsStr;
+	for (const auto& param : node.parameters) {
+		if (!paramsStr.empty()) paramsStr += ", ";
+		paramsStr += param;
+	}
+	dot += "    " + id + " [label=\"" + node.getNodeType() + "[" + node.funcName + "(" + paramsStr + ")]" + "\"];\n";
+	// Body
+	node.body->accept(*this);
+	std::string bodyId = stack.back().id; stack.pop_back();
+	dot += "    " + id + " -> " + bodyId + " [label=\"body\"];\n";
+	stack.push_back({ id });
+}

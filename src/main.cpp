@@ -16,14 +16,26 @@ void interactiveMode();
 
 int main() {
     auto script = readPythonFile("C:\\Users\\stalm\\source\\repos\\CCPython\\test.py");
+	printDebugInfo(script);
 
 	Lexer lexer(script);
 	Parser parser(lexer);
 	ASTNodePtr tree = parser.parse();
 	Interpreter interpreter(std::move(tree));
 
-	printDOT(script);
-	interpreter.interpret();
+	try {
+		Value result = interpreter.interpret();
+	}
+	catch (const std::exception& e) {
+		std::cerr << "[-]	Error: " << e.what() << std::endl << std::endl;
+		// print call stack
+		if (interpreter.callStack.size() != 0) {
+			std::cerr << "Call stack (most recent call last):" << std::endl;
+			for (auto it = interpreter.callStack.rbegin(); it != interpreter.callStack.rend(); ++it) {
+				std::cerr << "  in function '" << *it << "'" << std::endl;
+			}
+		}
+	}
 
 	interactiveMode();
 

@@ -16,8 +16,7 @@ void Parser::eat(TokenType type) {
 		currentToken = lexer.getNextToken();
 	}
 	else {
-		std::cerr << "Error: expected token type " << tokenTypeToString(type) << ", got " << tokenTypeToString(currentToken.type) << std::endl;
-		throw 1;
+		throw "Error: expected token type " + tokenTypeToString(type) + ", got " + tokenTypeToString(currentToken.type);
 	}
 }
 
@@ -39,7 +38,7 @@ std::vector<ASTNodePtr> Parser::statements() {
 
 	while (currentToken.type != TokenType::EOF_TOKEN && currentToken.type != TokenType::DEDENT) {
 		
-		if (currentToken.type == TokenType::IF || currentToken.type == TokenType::WHILE) { // add more compound statements here
+		if (currentToken.type == TokenType::IF || currentToken.type == TokenType::WHILE || currentToken.type == TokenType::DEF) { // add more compound statements here
 			stmts.push_back(compound_stmt());
 		}
 		else {
@@ -63,12 +62,14 @@ ASTNodePtr Parser::simple_stmt() {
 	return expr();
 }
 
-// compound_statement : if_statement
+// compound_statement : if_statement | while_statement | function_def
 ASTNodePtr Parser::compound_stmt() {
 	if (currentToken.type == TokenType::WHILE)
 		return while_stmt();
 	else if (currentToken.type == TokenType::IF)
 		return if_stmt();
+	else if (currentToken.type == TokenType::DEF)
+		return function_def();
 }
 
 ASTNodePtr Parser::while_stmt() {
@@ -129,6 +130,36 @@ ASTNodePtr Parser::else_stmt() {
 	return std::make_unique<BlockNode>(std::move(body));
 }
 
+// function_def : DEF NAME LPAR (NAME (COMMA NAME)*)? RPAR COLON NEWLINE block
+ASTNodePtr Parser::function_def() {
+	eat(TokenType::DEF);
+	if (currentToken.type != TokenType::NAME) {
+		throw "Error: Expected function name after 'def', got " + tokenTypeToString(currentToken.type);
+	}
+	std::string funcName = currentToken.value;
+	eat(TokenType::NAME);
+	eat(TokenType::LPAR);
+	std::vector<std::string> parameters;
+	if (currentToken.type == TokenType::NAME) {
+		parameters.push_back(currentToken.value);
+		eat(TokenType::NAME);
+		while (currentToken.type == TokenType::COMMA) {
+			eat(TokenType::COMMA);
+			if (currentToken.type != TokenType::NAME) {
+				throw "Error: Expected parameter name after ',', got " + tokenTypeToString(currentToken.type);
+			}
+			parameters.push_back(currentToken.value);
+			eat(TokenType::NAME);
+		}
+	}
+	eat(TokenType::RPAR);
+	eat(TokenType::COLON);
+	eat(TokenType::NEWLINE);
+	std::vector<ASTNodePtr> body = block();
+
+	return std::make_unique<FunctionDefNode>(funcName, parameters, std::make_unique<BlockNode>(std::move(body)));
+}
+
 // block : INDENT statements DEDENT
 std::vector<ASTNodePtr> Parser::block() {
 	eat(TokenType::INDENT);
@@ -147,8 +178,7 @@ ASTNodePtr Parser::assignment_stmt() {
 		// For now, we do not implement variable storage, return value of expr
 		return std::make_unique<AssignmentNode>(std::make_unique<VarNode>(varName), expr());
 	}
-	std::cerr << "Error: Invalid assignment statement, expected IDENTIFIER, got " << static_cast<int>(currentToken.type) << std::endl;
-	throw 1;
+	throw "Error: Invalid assignment statement, expected IDENTIFIER, got " + static_cast<int>(currentToken.type);
 }
 
 
@@ -321,6 +351,5 @@ ASTNodePtr Parser::factor() {
 		return node;
 	}
 
-	std::cerr << "Error: Invalide factor, got " << static_cast<int>(currentToken.type) << std::endl;
-	throw 1;
+	throw "Error: Invalide factor, got " + static_cast<int>(currentToken.type);
 }

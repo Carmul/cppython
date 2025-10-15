@@ -14,4 +14,4 @@ Value printFunc(const std::vector<Value>& args);
 Value printlnFunc(const std::vector<Value>& args);
 Value maxFunc(const std::vector<Value>& args);
 Value minFunc(const std::vector<Value>& args);
-
+Value nowFunc(const std::vector<Value>& args);

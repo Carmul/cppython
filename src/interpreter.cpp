@@ -199,8 +199,8 @@ void Interpreter::visit(const WhileNode& node) {
 }
 
 void Interpreter::visit(const FunctionCallNode& node) {
-
 	std::string funcName = node.funcName;
+    callStack.push_back(funcName);
 	std::vector<Value> args;
     for (const auto& argNode : node.arguments) {
         argNode->accept(*this);
@@ -210,13 +210,46 @@ void Interpreter::visit(const FunctionCallNode& node) {
 	// Handle built-in functions
     if(builtins.find(funcName) != builtins.end()) {
         result = builtins[funcName](args);
+		callStack.pop_back();
         return;
 	}
+    
+	// Handle user-defined functions
+    if (definedFunctions.find(funcName) != definedFunctions.end()) {
+        auto funcDef = definedFunctions[funcName].get();
+        if (args.size() != funcDef->parameters.size()) {
+            throw std::runtime_error("Function '" + funcName + "' expects " + std::to_string(funcDef->parameters.size()) + " arguments, got " + std::to_string(args.size()));
+        }
+        // Save current variables to restore later (simple scope handling)
+        auto savedVariables = variables;
+        // Set function parameters
+        for (size_t i = 0; i < args.size(); ++i) {
+            variables[funcDef->parameters[i]] = args[i];
+        }
+        // Execute function body
+        funcDef->body->accept(*this);
+        // Restore previous variables
+        variables = savedVariables;
+		callStack.pop_back();
+		return;
+    }
+    
+	throw std::runtime_error("Function '" + funcName + "' not defined");
 
-	// Handle user-defined functions (not implemented yet)
-	// For now, just throw an error
-	std::cerr << "Error: Function '" << funcName << "' not defined." << std::endl;
-    throw 1;
 }
 
+void Interpreter::visit(FunctionDefNode& node) {
+
+	// check if function already defined
+	if (definedFunctions.find(node.funcName) != definedFunctions.end()) {
+		throw std::runtime_error("Function '" + node.funcName + "' already defined");
+	}
+
+    definedFunctions[node.funcName] = std::make_unique<FunctionDefNode>(
+        node.funcName,
+        node.parameters,
+        std::move(node.body)
+    );
+    
+}
 

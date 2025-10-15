@@ -26,7 +26,7 @@ private:
 
 	ASTNodePtr  program();				// program : statements EOF_TOKEN
 	std::vector<ASTNodePtr> statements();// ( compound_statement | simple_statement NEWLINE )*
-	ASTNodePtr simple_stmt();		// simple_statement : print_stmt | assignment_stmt | expr
+	ASTNodePtr simple_stmt();		// simple_statement : assignment_stmt | expr
 	ASTNodePtr compound_stmt();	// compound_statement : if_statement
 	ASTNodePtr if_stmt();		// if_statement : IF expr COLON NEWLINE block ( elif_stmt | else )?
 	ASTNodePtr elif_stmt();		// elif_statement : ELIF expr COLON NEWLINE block ( elif_stmt | else )?
@@ -35,6 +35,7 @@ private:
 	std::vector<ASTNodePtr> block();					// block : INDENT statements DEDENT
 	ASTNodePtr assignment_stmt();		// assignment_stmt : IDENTIFIER ASSIGN expr
 	ASTNodePtr function_call(std::string func_name);		// function_call : NAME LPAR (expr (COMMA expr)*)? RPAR
+	ASTNodePtr function_def(); // function_def : DEF NAME LPAR (NAME (COMMA NAME)*)? RPAR COLON NEWLINE block
 };
 
 

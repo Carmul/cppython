@@ -14,8 +14,9 @@
 class Interpreter : public Visitor {
 public:
 	ASTNodePtr tree;
+	std::vector<std::string> callStack;
 
-	Interpreter(ASTNodePtr t) : result(0.0), tree(std::move(t)) { registetrBuiltins(); }
+	Interpreter(ASTNodePtr t) : result(0.0), tree(std::move(t)) { registetrBuiltins();  }
 
 	Value interpret();
 
@@ -32,11 +33,13 @@ public:
 	void visit(const IfNode& node) override;
 	void visit(const WhileNode& node) override;
     void visit(const FunctionCallNode& node) override;
+	void visit(FunctionDefNode& node) override;
 
 private:
 	std::unordered_map<std::string, Value> variables;
     Value result;
 	std::unordered_map<std::string, BuiltinFunc> builtins;
+	std::unordered_map<std::string, std::unique_ptr<FunctionDefNode>> definedFunctions;
 
 	void registetrBuiltins();
 };
