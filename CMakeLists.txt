@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.15)
-project(CPPython LANGUAGES CXX)
+project(cppython LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -29,5 +29,5 @@ set(HEADERS
     include/value.h
 )
 
-add_executable(CPPython ${SOURCES} ${HEADERS})
-target_include_directories(CPPython PRIVATE include)
+add_executable(cppython ${SOURCES} ${HEADERS})
+target_include_directories(cppython PRIVATE include)

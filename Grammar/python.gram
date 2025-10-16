@@ -26,7 +26,7 @@ function_def : DEF NAME LPAR (NAME (COMMA NAME)*)? RPAR COLON NEWLINE block
 return_stmt : RETURN expr
 
 
-expr : disjunction
+expr : disjunction | disjunction IF disjunction ELSE expr
 
 disjunction : conjunction ( OR conjunction )*
 

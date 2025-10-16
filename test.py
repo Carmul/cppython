@@ -2,7 +2,7 @@
 def main():
 
     num = 1
-    while num < 99999:
+    while num < 1000:
         if is_prime(num):
             println(num, " is Prime")
         num = num + 1
@@ -20,3 +20,4 @@ def is_prime(n):
 
 
 main()
+

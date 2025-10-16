@@ -8,16 +8,23 @@
 #include "dotGenerator.h"
 
 std::string readPythonFile(const std::string path);
-void printDebugInfo(std::string script);
 void printTokens(const std::string script);
-void printAST(const std::string script);
 void printDOT(const std::string script);
-void interactiveMode();
+void replMode();
 
-int main() {
-    auto script = readPythonFile("C:\\Users\\stalm\\source\\repos\\CCPython\\test.py");
-	printDebugInfo(script);
+int main(int argc, char* argv[]) {
 
+	if (argc == 1) {
+		replMode();
+		return 0;
+	} 
+	if (argc != 2) {
+		std::cerr << "Usage: cppython <script.py>" << std::endl;
+		return 1;
+	}
+
+    auto script = readPythonFile(argv[1]);
+	
 	Lexer lexer(script);
 	Parser parser(lexer);
 	ASTNodePtr tree = parser.parse();
@@ -37,14 +44,14 @@ int main() {
 		}
 	}
 
-	interactiveMode();
+	replMode();
 
     return 1;
 }
 
 
 // REPL - Read Eval Print Loop
-void interactiveMode() {
+void replMode() {
 
 	Interpreter interpreter(nullptr);
 	std::cout << "\n\nCPPython Interpreter By Carmul (2025)\n(type 'exit' to quit)\n";
@@ -118,13 +125,6 @@ void printTokens(const std::string script) {
 	}
 }
 
-void printAST(const std::string script) {
-	Lexer lexer = Lexer(script);
-	Parser parser(lexer); // create parser
-	ASTNodePtr tree = parser.parse(); // parse input to AST
-	// print AST
-	std::cout << "AST: " << tree->toString() << std::endl << std::endl;
-}
 
 void printDOT(const std::string script) {
 	Lexer lexer = Lexer(script);
@@ -132,14 +132,5 @@ void printDOT(const std::string script) {
 	ASTNodePtr tree = parser.parse(); // parse input to AST
 	// generate and print DOT format
 	std::string dot = DotGenerator().generate(std::move(tree));
-	std::cout << "DOT format:\n" << dot << std::endl;
-}
-
-void printDebugInfo(std::string script) {
-
-	printTokens(script);
-
-	printAST(script);
-
-	printDOT(script);
+	std::cout << dot << std::endl;
 }

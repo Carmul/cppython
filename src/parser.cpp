@@ -212,10 +212,30 @@ ASTNodePtr Parser::return_stmt() {
 }
 
 
-// expr : disjunction
+// expr : disjunction | disjunction (IF disjunction ELSE expr)?
 ASTNodePtr Parser::expr() {
-	return disjunction();
+	auto defaultExpr = disjunction();
+	if (currentToken.type == TokenType::IF) {
+		eat(TokenType::IF);
+		auto conditionExpr = disjunction();
+		eat(TokenType::ELSE);
+		auto elseExpr = expr();
+
+		std::vector<ASTNodePtr> b;
+		b.push_back(std::move(defaultExpr));
+
+		std::vector<ASTNodePtr> eb;
+		eb.push_back(std::move(elseExpr));
+
+		return std::make_unique<IfNode>(
+			std::move(conditionExpr),
+			std::make_unique<BlockNode>(std::move(b)),
+			std::make_unique<BlockNode>(std::move(eb))
+		);
+	}
+	return defaultExpr;
 }
+
 
 // disjunction: conjunction ( OR conjunction )*
 ASTNodePtr Parser::disjunction() {
